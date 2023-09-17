@@ -8,7 +8,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 
 
 const App= lazy(() =>
-  wait(1000).then(() => import("./App.tsx"))
+  wait(2000).then(() => import("./App.tsx"))
 );
 
 const MainPage= lazy(() =>

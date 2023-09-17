@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { toast } from "@/components/ui/use-toast"
-import { useState } from "react"
+
 
 
 const items = [
@@ -53,7 +53,7 @@ const FormSchema = z.object({
 
 
 export function CheckBox() {
-  let [SelectedPrefence,SetSelectedPrefence] = useState(["Simple"]) ;
+
   let storedItem = localStorage.getItem("SelectedPrefence");
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
@@ -105,7 +105,7 @@ export function CheckBox() {
                             checked={field.value?.includes(item.id)}
                             onCheckedChange={(checked) => {
                               console.log(field.value,"here is check")
-                              console.log(SelectedPrefence,"valye")
+                     
                               return checked
                                 ? field.onChange([...field.value, item.id])
                                 : field.onChange(
