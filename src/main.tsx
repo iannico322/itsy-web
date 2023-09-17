@@ -22,7 +22,7 @@ const NotFound= lazy(() =>
 const router = createBrowserRouter([
 
   {
-    path: "/react-vite-supreme/itsy",
+    path: "/itsy-web/itsy",
     element:  <>
     <Suspense fallback={<Loader />}>
       <MainPage  />
@@ -37,14 +37,14 @@ const router = createBrowserRouter([
     </Suspense>
   },
   {
-    path: "/react-vite-supreme/",
+    path: "/itsy-web/",
     element:
     <Suspense fallback={<Loader />}>
       <App />
     </Suspense>,
     children: [
       {
-        path: "/react-vite-supreme/page2",
+        path: "/itsy-web/page2",
         element: 
         <Suspense fallback={<Loader />}>
           <NotFound />

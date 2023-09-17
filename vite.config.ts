@@ -4,7 +4,7 @@ import { defineConfig } from "vite"
 
 export default defineConfig({
         // REPO-NAME
-  base: "/react-vite-supreme",
+  base: "/itsy-web",
   plugins: [react()],
   resolve: {
     alias: {

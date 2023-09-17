@@ -23,7 +23,7 @@ const MainPage = () => {
 
       {/* Naa dri ang navigation bar */}
       <nav className=" flex justify-around items-center w-full py-5 box-border px-6  ">
-        <Link className=" w-[70%] sm:w-[50%]" to="/react-vite-supreme">
+        <Link className=" w-[70%] sm:w-[50%]" to="/itsy-web">
           <img
             className="object-contain h-12 m-0 sm:h-10 "
             src={Logo}
