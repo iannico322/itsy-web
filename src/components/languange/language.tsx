@@ -88,11 +88,11 @@ export function Language () {
                           key={language.value}
                           onSelect={() => {
                             localStorage.setItem("Languange",language.value)
+
                             toast({
-                              title: "Language Change!",
-                              description:`Yay! We’re now chatting in ${language.value}` ,
-                            })
-                            console.log(language.value)
+                              title: "Language Swap!",
+                              description: `Woohoo! We're now chit-chatting in ${language.value}!`,
+                            });
                             form.setValue("language", language.value)
                             return (language.value)
                             

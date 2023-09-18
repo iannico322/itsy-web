@@ -13,11 +13,16 @@ import MessageImg from "./images/message.png";
 import BookImg from "./images/book.png";
 
 function App() {
-  useEffect(() => {
-    localStorage.setItem("SelectedPrefence", `["Simple"]`);
-    localStorage.setItem("Languange", `English`);
+
+
+  // this setups all the neccesary storage for the system for its first boot
+  useEffect(()=>  {
+      localStorage.getItem('messages')==null? localStorage.setItem('messages','[{ "from": "itsy", "products": [],"message":"Hey dear, I\'m ITSY your culinary spider buddy! share your items, and I\'ll weave dishes so snappy!", "direction":"","image":"" }]'):""
+      localStorage.getItem("SelectedPrefence")==null?localStorage.setItem("SelectedPrefence", `["Simple"]`):""
+      localStorage.getItem("Languange")==null?localStorage.setItem("Languange", `English`):""
   }, []);
 
+  
   return (
     <div className="flex flex-col relative w-screen h-screen overflow-hidden bg-background">
       <nav className=" flex justify-around items-center w-full py-5 border-b-[1px] border-accent animate__animated animate__slideInDown  ">
