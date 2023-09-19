@@ -10,7 +10,7 @@ import { Toaster } from "@/components/ui/toaster";
 
 import { EraserIcon } from "@radix-ui/react-icons";
 import { DiscordLogoIcon } from "@radix-ui/react-icons";
-
+import { ReloadIcon } from "@radix-ui/react-icons"
 import { ChatBubbleIcon } from "@radix-ui/react-icons";
 import { LayersIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
@@ -18,14 +18,25 @@ import { useEffect, useState } from "react";
 import EmtScreen from "./EmtScreen";
 import UserMSG from "./UserMSG";
 import AIMSG from "./AIMSG";
+import OpenAI from "./OpenAI";
+import SelectedPage from "./SelectedPage";
 
 const MainPage = () => {
+
+ 
   type MessageType = {
-    from: string;
+    role: string;
     products: any;
     direction: any;
     message: any;
     image: any;
+  };
+
+  type MenuType = {
+    name: string;
+    ingredients: string[];
+    cooking_steps: string[];
+  
   };
 
   const [messages, setMessages] = useState<MessageType[]>(
@@ -34,6 +45,20 @@ const MainPage = () => {
 
   const [items, setItem]: any = useState({ name: "", qk: "" });
   const [pageAtChat, setpageAtChat] = useState(true);
+  const [menus,setMenus] = useState <MenuType[]> ([]);
+  const [SelectedMenu, SetSelectedMenu] = useState<MenuType>({
+    name: "",
+    ingredients: [],
+    cooking_steps: [],
+  
+  })
+
+
+  const [viewMenu,SetViewMenu] = useState(false)
+
+
+
+  const [loading,SetLoading]= useState(false)
 
 
 //this auto save the messages of the users
@@ -43,6 +68,11 @@ const MainPage = () => {
     console.log(messages);
     localStorage.setItem("messages", JSON.stringify(messages));
   }, [messages]);
+
+
+
+
+  
 
 
 
@@ -63,21 +93,41 @@ const MainPage = () => {
     console.log(messages[indexMain], "yawa", indexMain);
   }
 
-  function reply() {
+  function replyChatBeforeRES() {
     messages.map((e: any) =>
       setMessages([
         ...messages,
         {
           products: [...e.products],
-          message: "hi yawa",
+          message: "🕸️Hello, my dear! Just like a little spider 🕷️ busily spinning a beautiful web, I’m weaving together your menus. Hang tight for just a few moments… your patience is as precious as a dewdrop on a spider’s web. 🌼",
           direction: "outgoing",
-          from: "pc",
+          role: "assistant",
           image: "",
         },
       ])
     );
+  }
 
-    setItem({ name: "", qk: "" });
+  function replyChatAfterRES() {
+    let menus_name:any = []
+    menus.map((e,key)=>{
+      menus_name=[...menus_name, `${key+1}. ${e.name}`] 
+    })
+    messages.map((e: any) =>
+      setMessages([
+        ...messages,
+        {
+          products: [...e.products],
+          message: `🕸️Hello, dear! Like a diligent spider 🕷️, your menus are spun. Thanks for your patience, as precious as dew on a web. Enjoy your menus! 🌼
+          \n\n
+          Here are your menus: ${menus_name.join(' ')},`
+          ,
+          direction: "outgoing",
+          role: "assistant",
+          image: "",
+        },
+      ])
+    );
   }
 
   function addItems() {
@@ -97,9 +147,9 @@ const MainPage = () => {
             ...e.products,
             { itemsName: `${items.name}`, itemsQK: `${items.qk}` },
           ],
-          message: "This is your updated Item",
+          message: "This is my updated Item",
           direction: "outgoing",
-          from: "user",
+          role: "user",
           image: "",
         },
       ])
@@ -135,11 +185,12 @@ const MainPage = () => {
       {/* Naa dri ang navigation bar */}
 
       {/* Mobile Navigation only shows when screen is sm */}
-      <div className=" hidden sm:flex w-full h-10 items-center   gap-3 justify-center text-accent-foreground/80 text-xs ">
+      <div className=" hidden sm:flex w-full h-10 items-center z-50   gap-3 justify-center text-accent-foreground/80 text-xs ">
         <p
           className=" flex gap-2 items-center hover:text-[#3dd44b] hover:cursor-pointer  "
           onClick={() => {
             setpageAtChat(true);
+            SetViewMenu(false)
           }}
         >
           {" "}
@@ -150,6 +201,7 @@ const MainPage = () => {
           className=" flex gap-2 items-center hover:text-[#3dd44b] hover:cursor-pointer "
           onClick={() => {
             setpageAtChat(false);
+            SetViewMenu(false)
           }}
         >
           {" "}
@@ -158,10 +210,33 @@ const MainPage = () => {
       </div>
       {/* Mobile Navigation only shows when screen is sm */}
 
+
+           
+
+
+
+
       <div
         id="container"
         className=" relative h-full w-full flex px-6 sm:pb-0 gap-5 box-border justify-center  items-center pb-6 overflow-hidden sm:flex-col   "
       >
+
+        <div className={viewMenu?" absolute h-[97.2%] w-full flex px-6 sm:pb-0 gap-5 box-border justify-center  items-center  overflow-hidden sm:flex-col pointer-events-none ":" hidden absolute h-full w-full px-6 sm:pb-0 gap-5 box-border justify-center  items-center  overflow-hidden sm:flex-col pointer-events-none "}>
+          <div className=" relative sm:absolute z-30 sm:h-[95%] sm:w-[97%] flex bg-card border-border border-[1px] rounded-md w-[70%] h-full flex-col  box-border  items-center justify-center pointer-events-auto p-5">
+            <SelectedPage
+              SelectedMenu={SelectedMenu}
+              back={()=>{
+                SetViewMenu(false)
+              }}
+            />
+
+          </div>
+          <div className=" sm:hidden relative  w-[30%] h-full  pointer-events-none">
+
+          </div>
+        </div> 
+        
+        
         {/* CARD 1 */}
         <div
           id="card-left"
@@ -170,7 +245,7 @@ const MainPage = () => {
               ? " sm:absolute sm:h-[95%] sm:w-[97%] relative bg-card border-border border-[1px] rounded-md w-[70%] h-full   box-border  flex items-center justify-center"
               : " sm:absolute sm:h-[95%] sm:w-[97%] relative bg-card sm:hidden border-border border-[1px] rounded-md w-[70%] h-full   box-border  flex items-center justify-center"
           }
-        >
+          >
           <div
             id="card-left-container"
             className=" w-[95%] h-[95%] rounded-md flex flex-col  "
@@ -186,13 +261,13 @@ const MainPage = () => {
               >
                 {messages.length >= 2 ? (
                   messages.map((e, key) =>
-                    e.from != "user" ? (
-                      <AIMSG e={e} />
+                    e.role != "user" ? (
+                      <AIMSG e={e} key={key} />
                     ) : (
-                      <UserMSG e={e} mkey={key} onDelete={deleteItem} />
+                      <UserMSG e={e} mkey={key} key={key} onDelete={deleteItem} />
                     )
                   )
-                ) : (
+                  ) : (
                   <EmtScreen />
                 )}
               </div>
@@ -256,7 +331,7 @@ const MainPage = () => {
                     if (window.confirm('Sure to erase? No magic can bring it back!')) {
                       localStorage.setItem(
                         "messages",
-                        '[{ "from": "itsy", "products": [],"message":"Hey dear, I\'m ITSY your culinary spider buddy! share your items, and I\'ll weave dishes so snappy!", "direction":"","image":"" }]'
+                        '[{ "role": "itsy", "products": [],"message":"Hey dear, I\'m ITSY your culinary spider buddy! share your items, and I\'ll weave dishes so snappy!", "direction":"","image":"" }]'
                       );
                       setMessages(
                         JSON.parse(localStorage.getItem("messages") || "")
@@ -282,23 +357,61 @@ const MainPage = () => {
 
 
                 <Button
+
+                  disabled={loading?true:false}
                   className="px-10 w-full gap-2"
                   onClick={() => {
-                    console.log("shit");
-                    reply();
+                    
                     toast({
-                      title: "Generating Menus ",
-                      description: "Please wait yawa",
+                      title: "Loading... ",
+                      description: "Please wait for i searching for your menus",
                     });
+                    
+                    let product:any = []
+                    messages[messages.length-1].products.map((e:any)=>(
+
+                      product = [...product,`${e.itemsQK} ${e.itemsName}`]
+              
+                    ))
+
+                    console.log(product.join(' '))
+                    
+                    
+                    
+                    replyChatBeforeRES()
+                    
+                    SetLoading(true)
+                    OpenAI({ product: `${product.join(' ')}` })
+                    .then(result => {
+                        SetLoading(false)
+                        setMenus(result)
+                        toast({
+                          title: "DONE... ",
+                          description: "Here are your menus",
+                        });
+                        
+
+                        replyChatAfterRES()
+                        
+                      })
+                    .catch(error => {
+                      console.error(error);
+                    });
+
+                    
+                 
+                    
                   }}
                 >
                   Generate Menus
-                  <DiscordLogoIcon className="mr-2 h-4 w-4 text-accent text-xl" />
+                  {loading?<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />:
+                  <DiscordLogoIcon className="mr-2 h-4 w-4 text-accent text-xl" />}
                 </Button>
               </div>
             </div>
           </div>
         </div>
+        
         {/* This page is for action on left container */}
 
         {/* CARD 2 */}
@@ -320,7 +433,24 @@ const MainPage = () => {
           {/* title here */}
 
           {/* container of menus here */}
-          <div className=" h-full w-full border-[#3dd44b] border-[1px] rounded-md"></div>
+          <div className=" h-full w-full border-[#3dd44b] border-[1px] rounded-md flex flex-col gap-4 py-5">
+
+            {
+              menus.map((e,key)=>(
+                
+                <div className="flex w-full justify-between px-6 items-center" key={key}>
+
+                  <h1 className=" text-sm  text-accent-foreground max-w-[60%] text-left"> {key+1}.  {e.name}</h1>
+                  <Button size="sm" onClick={()=>{
+                    SetViewMenu(true)
+                    SetSelectedMenu(e)
+                  }} >View</Button>
+                </div>
+              ))
+            }
+
+                
+          </div>
           {/* container of menus here */}
         </div>
       </div>
