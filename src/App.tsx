@@ -12,13 +12,20 @@ import ScanImg from "./images/scan.png";
 import MessageImg from "./images/message.png";
 import BookImg from "./images/book.png";
 
+
 function App() {
 
 
   // this setups all the neccesary storage for the system for its first boot
+  // const encryptText = (plainText: string): string => {
+  //   return CryptoJS.AES.encrypt(plainText, "itsy").toString();
+  // };
+
   useEffect(()=>  {
+      localStorage.getItem('none')==null?localStorage.setItem('none','U2FsdGVkX18UQ2IN3040zHeBbni7vv1V3IxxQCKtFK8qVvVbd+1SZAApU5EQo2aptfrXD1Z4xfHRbYexqYJoIOSeBSA2gUymsQRoS6YvWcI='):""
 
       localStorage.getItem('messages')==null? localStorage.setItem('messages','[{ "from": "itsy", "products": [],"message":"Hey dear, I\'m ITSY your culinary spider buddy! share your items, and I\'ll weave dishes so snappy!", "direction":"","image":"" }]'):""
+      localStorage.getItem('menus')==null? localStorage.setItem('menus','[]'):""
       localStorage.getItem("SelectedPrefence")==null?localStorage.setItem("SelectedPrefence", `["Simple"]`):""
       localStorage.getItem("Languange")==null?localStorage.setItem("Languange", `English`):""
   }, []);

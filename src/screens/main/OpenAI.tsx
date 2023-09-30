@@ -1,9 +1,18 @@
 
 import axios from 'axios'
 
+import CryptoJS from "crypto-js"
+
+async function OpenAI({product}:any) {
 
 
-function OpenAI({product}:any) {
+  
+
+
+  const decryptText = (encryptedText: string): string => {
+    const bytes = CryptoJS.AES.decrypt(encryptedText, "itsy");
+    return bytes.toString(CryptoJS.enc.Utf8);
+  };
 
  
 
@@ -114,19 +123,17 @@ function OpenAI({product}:any) {
 
       
 
-       return axios.post("https://api.openai.com/v1/chat/completions", apiRequestBody, {
-            headers: {
-                Authorization: `Bearer ${import.meta.env.VITE_OPENAIKEY_ENV}`,
-                "Content-Type": "application/json",
-                }
-        }).then((response)=>{
-
-
-            return JSON.parse(response.data.choices[0].message.content) 
-           
-        }).catch((e:any)=>{
-            return e.data
-        })
+     try {
+    const response = axios.post("https://api.openai.com/v1/chat/completions", apiRequestBody, {
+      headers: {
+        Authorization: `Bearer ${ decryptText(localStorage.getItem('none')||"")}`,
+        "Content-Type": "application/json",
+      }
+    });
+    return JSON.parse((await response).data.choices[0].message.content);
+  } catch (e) {
+    return "Something Error";
+  }
 
 
       
