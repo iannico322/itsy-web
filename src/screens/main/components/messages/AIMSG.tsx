@@ -1,4 +1,4 @@
-import ItsyLogo from './../../images/Itsy_logo.png'
+import ItsyLogo from './../../../../images/Itsy_logo.png'
 
 function AIMSG({e}: any) {
 

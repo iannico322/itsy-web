@@ -12,7 +12,7 @@ const SelectedPage = (props:any) => {
                 <div className='flex gap-4  '>
                     <img src={logo} className=" animate__animated animate__fadeInDown h-[70px] sm:h-[50px] object-contain  relative" />
                     <div className="flex flex-col items-start justify-center">
-                    <p className="text-sm text-[#3dd44b]">ITSY</p>
+                    <p className="text-lg font-bold sm:text-sm text-[#3dd44b]">ITSY</p>
                     <p className="text-xl font-bold sm:text-base ">👨‍🍳{ props.SelectedMenu.name ? props.SelectedMenu.name:"" }</p>
                     </div>
                 </div>

@@ -8,6 +8,7 @@ import { Dropdown } from "@/components/dropdown/Dropdown";
 import { toast } from "@/components/ui/use-toast";
 import { Toaster } from "@/components/ui/toaster";
 
+import { StopIcon } from "@radix-ui/react-icons";
 import { EraserIcon } from "@radix-ui/react-icons";
 import { DiscordLogoIcon } from "@radix-ui/react-icons";
 import { ReloadIcon } from "@radix-ui/react-icons"
@@ -17,9 +18,9 @@ import { useEffect, useState } from "react";
 
 
 import EmtScreen from "./EmtScreen";
-import UserMSG from "./UserMSG";
-import AIMSG from "./AIMSG";
-import OpenAI from "./OpenAI";
+import UserMSG from "./components/messages/UserMSG";
+import AIMSG from "./components/messages/AIMSG";
+import OpenAI, {cancelRequest }  from "./API's/OpenAI";
 import SelectedPage from "./SelectedPage";
 import MenuLoader from "@/components/loader/menuLoader";
 
@@ -82,16 +83,6 @@ useEffect(() => {
   
 
 
-
-
-  // this function gets the value of the source and update it
-  const onChangeInput = (e: any) => {
-    setItem({
-      ...items,
-      [e.target.name]: e.target.value,
-    });
-  };
-
   function deleteItem(indexMain: any, indexToDelete: any) {
     messages[indexMain].products.splice(indexToDelete, 1);
 
@@ -116,6 +107,9 @@ useEffect(() => {
       ])
     );
   }
+
+
+
 
 
   //This function add items to the messages object
@@ -146,6 +140,26 @@ useEffect(() => {
     }
     
   }
+
+
+  
+const handleKeyDown = (event: any) => {
+  if (event.key === 'Enter') {
+    console.log('Enter key pressed');
+    addItems()
+  
+  }
+}
+
+  // this function gets the value of the source and update it
+  const onChangeInput = (e: any) => {
+    
+    setItem({
+      ...items,
+      [e.target.name]: e.target.value,
+    });
+  };
+
 
   return (
     <div className=" flex flex-col  w-screen h-screen overflow-hidden  bg-background box-border ">
@@ -295,6 +309,7 @@ useEffect(() => {
                       value={items.name}
                       name="name"
                       onChange={onChangeInput}
+                      onKeyDown={handleKeyDown}
                     />
                     <Input
                       type="text"
@@ -302,6 +317,7 @@ useEffect(() => {
                       value={items.qk}
                       name="qk"
                       onChange={onChangeInput}
+                      onKeyDown={handleKeyDown}
                     />
                   </div>
                   <div className=" flex sm:gap-1  sm:items-end  sm:flex-col sm:max-w-[80px] flex-row-reverse justify-between w-full  ">
@@ -318,14 +334,33 @@ useEffect(() => {
               </div>
               {/* bottom controls */}
 
-              <div className="flex w-full flex-row gap-4">
+              <Button
+variant="outline"
+className={loading?" animate__animated animate__fadeInUp min-w-24 text-accent-foreground  absolute  flex self-center  gap-2  mt-[40px] ":" min-w-24 text-accent-foreground  absolute   self-center  gap-2  translate-y-[40px] animate-pulse hidden "}
+onClick={
+()=>{
+  cancelRequest()
+}
+}>
+
+
+<StopIcon className="sm:mr-0 mr-2 h-4 w-4 text-accent-foreground animate-spin  " />
+                 Stop Responding
+</Button>
+
+              <div className="flex w-full flex-row gap-4 relative">
 
 
                 {/* this button clear the data in side the message storage */}
+               
+
                 <Button
                   variant="outline"
                   className=" w-24 text-accent-foreground sm:w-14"
                   onClick={() => {
+
+                    
+
                     if (window.confirm('Sure to erase? No magic can bring it back!')) {
                       localStorage.setItem(
                         "messages",
@@ -357,8 +392,7 @@ useEffect(() => {
                 </Button>
                 {/* this button clear the data in side the message storage */}
 
-
-
+                
 
                 <Button
 
@@ -373,7 +407,6 @@ useEffect(() => {
                     
                     let product:any = []
                     messages[messages.length-1].products.map((e:any)=>(
-
                       product = [...product,`${e.itemsQK} ${e.itemsName}`]
               
                     ))
@@ -383,10 +416,34 @@ useEffect(() => {
                     
                     
                     replyChatBeforeRES()
-                    
+                  
                     SetLoading(true)
                     OpenAI({ product: `${product.join(' ')}` })
-                    .then((result:any) => {
+                    .then((result:any[]) => {
+                      console.log("Menu API Response")
+                      console.table(result)
+                        if (result.length ==0) {
+                          toast({
+                            title: "Cancel API!",
+                            description: "it works",
+                          });
+                          SetLoading(false)
+
+
+                          messages.map((e: any) =>
+                            setMessages([
+                              ...messages,
+                              {
+                                products: [...e.products],
+                                message: `Your request for cancellation of menu has been successfully implemented! `
+                                ,
+                                direction: "outgoing",
+                                role: "assistant",
+                                image: "",
+                              },
+                            ])
+                          );
+                        }else{
                         SetLoading(false)
                         setMenus(result)
                         toast({
@@ -415,21 +472,15 @@ useEffect(() => {
                                 image: "",
                               },
                             ])
-    );
+                          );
                         }
-                        
-
                         // replyChatAfterRES()
-                        
+                      }
                       })
                     .catch((error:any) => {
                       SetLoading(false)
                       console.log(error);
                     });
-
-                    
-                 
-                    
                   }}
                 >
                   Generate Menus
@@ -471,7 +522,9 @@ useEffect(() => {
 
           :
           
-            menus?menus.map((e,key)=>(
+            menus.length !=0?
+            
+            menus.map((e,key)=>(
               
               <div className="flex w-full justify-between px-6 items-center" key={key}>
 

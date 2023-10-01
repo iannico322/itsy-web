@@ -3,8 +3,10 @@ import axios from 'axios'
 
 import CryptoJS from "crypto-js"
 
-async function OpenAI({product}:any) {
+let cancelRequest: () => void; 
 
+async function OpenAI({product}:any ) {
+  const source = axios.CancelToken.source();
 
   
 
@@ -120,11 +122,16 @@ async function OpenAI({product}:any) {
         ]
       }
 
-
       
+      cancelRequest = () => {
+        source.cancel('Operation canceled by the user.');
+       
+        
+      }
 
      try {
     const response = axios.post("https://api.openai.com/v1/chat/completions", apiRequestBody, {
+      cancelToken: source.token,
       headers: {
         Authorization: `Bearer ${ decryptText(localStorage.getItem('none')||"")}`,
         "Content-Type": "application/json",
@@ -132,14 +139,20 @@ async function OpenAI({product}:any) {
     });
     return JSON.parse((await response).data.choices[0].message.content);
   } catch (e) {
-    return "Something Error";
+    return [];
   }
 
+  
 
-      
+
+ 
+
+
 
 
         
 }
 
 export default OpenAI
+
+export { cancelRequest };
