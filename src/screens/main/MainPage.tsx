@@ -169,7 +169,7 @@ useEffect(() => {
 
     console.log("im running")
     toast({
-      title: "Analyzing Image!",
+      title: "Analyzing Image...",
       description:
         "wait up negga im analyzing your image...!",
     });
@@ -177,13 +177,29 @@ useEffect(() => {
       
 
       let items:any = []
-      result == "No Food found!"?""
-      :
-      JSON.parse(result)[0].food_indentified.map((e:any)=>(
-        items = [...items,`${e.quantity} ${e.name} `]
-      ))
-       
-      
+
+
+
+
+      if (result == "No Food found!") {
+        toast({
+        title: "Done analyzing!",
+        description:
+          "No Food found!",
+      })
+      }else{
+
+        JSON.parse(result)[0].food_indentified.map((e:any)=>(
+          items = [...items,`${e.quantity} ${e.name} `]
+        ))
+
+        toast({
+          title: "Done analyzing!",
+          description:
+            "I’ve taken a peek at your image and found the following adorable yummy dummy item(s)",
+        })
+
+      }
       
       messages.map((e: any) =>
       setMessages([
@@ -197,7 +213,7 @@ useEffect(() => {
         },
         {
           products: [...e.products],
-          message: result == "No Food found!"? `🕸️Hello, dear! I’m sorry, but I couldn’t find any food in the image you provided.` : `🕸️Hello, dear! I’ve identified the items in the image.\n\n Here they are items:\n ${items.join('\n')}` ,
+          message: result == "No Food found!"? `🕸️Hello, dear! I’m sorry, but I couldn’t find any food in the image you provided.` : `🕸️Hello, dear! I’ve taken a peek at your image and found the following adorable yummy dummy item(s):\n\n ${items.join('\n')}` ,
           direction: "outgoing",
           role: "assistant",
           image: "",

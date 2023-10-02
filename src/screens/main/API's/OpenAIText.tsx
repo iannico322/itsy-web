@@ -19,8 +19,7 @@ async function OpenAIText({product}:any ) {
 
  
 
-  const bodyPrompt = `Generate at least 2 dishes in JSON format based on the following products, preferences, and language:
-
+  const bodyPrompt = `Generate at least 2 dishes in JSON format based on the following products, preferences, and language.
   Products: [${product}]
   Preferences: [${localStorage.getItem('SelectedPrefence')}]
   Language [${localStorage.getItem('Languange')}]
@@ -33,15 +32,7 @@ async function OpenAIText({product}:any ) {
           "cooking_steps": ["1. step1", "2. step2", ...]
       },
       ...
-  ]
-  make your response strickly inline with the output format, which is JSON, do not talk anything else please, and do restrict from adding additional product that is not included in products list. make your cooking steps detailed as much as posible. again make sure your reponse is accurately on the expected output format.
-
-  Please ensure your response strictly adheres to the output format, which is JSON. Do not include any additional information or commentary. Also, please refrain from adding any products that are not included in the provided product list. Make your cooking steps as detailed as possible and translate them into the specified language (in this case, ${localStorage.getItem('Languange')}). Please note that despite the specified language for the cooking steps, the rest of the response should still be in English.
-  
-  
- 
-  
-  `
+  ]`
 
    const apiMessages =  { role: "user", content: bodyPrompt}
 
@@ -50,7 +41,7 @@ async function OpenAIText({product}:any ) {
         "model": "gpt-3.5-turbo",
         "messages": [
           { 
-            "role": "system", "content": `You are a professional chef with 10 years of experience. Your task is to generate a list of recipes. Each recipe should be in the following format: \n\n{\n  \"name\": \"dish name\",\n  \"ingredients\": [\"ingredient1\", \"ingredient2\", ...],\n  \"cooking_steps\": [\"1. step1\", \"2. step2\", ...]\n}\n\nRemember to provide detailed and professional descriptions for each ingredient and cooking step.`,
+            "role": "system", "content": `You are a professional chef with 10 years of experience. Your task is to generate a list of recipes.`,
         
           },
           {
