@@ -14,13 +14,18 @@ import { DiscordLogoIcon } from "@radix-ui/react-icons";
 import { ReloadIcon } from "@radix-ui/react-icons"
 import { ChatBubbleIcon } from "@radix-ui/react-icons";
 import { LayersIcon } from "@radix-ui/react-icons";
-import { useEffect, useState } from "react";
+import { UploadIcon } from "@radix-ui/react-icons";
+
+
+
+import { useEffect,useState } from "react";
 
 
 import EmtScreen from "./EmtScreen";
 import UserMSG from "./components/messages/UserMSG";
 import AIMSG from "./components/messages/AIMSG";
-import OpenAI, {cancelRequest }  from "./API's/OpenAI";
+import OpenAIText, {cancelRequest }  from "./API's/OpenAIText";
+import OpenAIImage from "./API's/OpenAIImage";
 import SelectedPage from "./SelectedPage";
 import MenuLoader from "@/components/loader/menuLoader";
 
@@ -56,8 +61,6 @@ const MainPage = () => {
 
 
   const [viewMenu,SetViewMenu] = useState(false)
-
-
 
   const [loading,SetLoading]= useState(false)
 
@@ -142,6 +145,66 @@ useEffect(() => {
   }
 
 
+  const uploadImage= (event:any)=> {
+
+    messages.map((e: any) =>
+      setMessages([
+        ...messages,
+        {
+          products: [...e.products],
+          message: `Identify food items on this image`,
+          direction: "outgoing",
+          role: "user",
+          image: URL.createObjectURL(event.target.files[0]),
+        },
+        {
+          products: [...e.products],
+          message: `🕸️Hello, dear! Im about to scan your image, please wait for a while`,
+          direction: "outgoing",
+          role: "assistant",
+          image: "",
+        },
+      ])
+    );
+
+    console.log("im running")
+    toast({
+      title: "Analyzing Image!",
+      description:
+        "wait up negga im analyzing your image...!",
+    });
+     OpenAIImage({ image: event.target.files[0] }).then(( result:any)=>{
+      
+      console.log(result == "No Food")
+      messages.map((e: any) =>
+      setMessages([
+        ...messages,
+        {
+          products: [...e.products],
+          message: `Identify food items on this image`,
+          direction: "outgoing",
+          role: "user",
+          image: URL.createObjectURL(event.target.files[0]),
+        },
+        {
+          products: [...e.products],
+          message: result == "No Food"? `🕸️Hello, dear! I dont Find any food on your Image` : `🕸️Hello, dear! I have i dentify the items on the image \n Items:\n ${ result.join("\n")}` ,
+          direction: "outgoing",
+          role: "assistant",
+          image: "",
+        },
+      ])
+    )
+      
+      
+    }).catch((e:any)=>{
+      console.log(e)
+    })
+    
+    
+  }
+
+
   // this function gets the value of the source and update it
 const handleKeyDown = (event: any) => {
   if (event.key === 'Enter') {
@@ -171,8 +234,6 @@ const handleKeyDown = (event: any) => {
 
       {/* Naa dri ang navigation bar */}
       <nav className=" flex justify-between items-center w-full py-5 box-border px-6  ">
-
-        
         <Link className=" w-[20%] sm:w-[50%]" to="/itsy-web">
           <img
             className="object-contain h-12 m-0 sm:h-10  "
@@ -194,7 +255,7 @@ const handleKeyDown = (event: any) => {
           className=" flex gap-2 items-center hover:text-[#3dd44b] hover:cursor-pointer  "
           onClick={() => {
             setpageAtChat(true);
-            SetViewMenu(false)
+            SetViewMenu(false);
           }}
         >
           {" "}
@@ -205,50 +266,46 @@ const handleKeyDown = (event: any) => {
           className=" relative flex gap-2 items-center hover:text-[#3dd44b] hover:cursor-pointer "
           onClick={() => {
             setpageAtChat(false);
-            SetViewMenu(false)
+            SetViewMenu(false);
           }}
         >
           {" "}
-          
           Menus <LayersIcon className="sm:mr-0 mr-2 h-4 w-4 " />
-          <span className={menus.length==0?" pointer-events-none text-[10px] translate-y-[-8px] translate-x-2 absolute right-0 h-4 w-4 bg-red-500  text-accent hidden items-center justify-center rounded-full"
-        :
-        " pointer-events-none text-[10px] translate-y-[-8px] translate-x-2 absolute right-0 h-4 w-4 bg-red-500  text-accent flex items-center justify-center rounded-full "  
-        
-        }>
-                {menus.length}
+          <span
+            className={
+              menus.length == 0
+                ? " pointer-events-none text-[10px] translate-y-[-8px] translate-x-2 absolute right-0 h-4 w-4 bg-red-500  text-accent hidden items-center justify-center rounded-full"
+                : " pointer-events-none text-[10px] translate-y-[-8px] translate-x-2 absolute right-0 h-4 w-4 bg-red-500  text-accent flex items-center justify-center rounded-full "
+            }
+          >
+            {menus.length}
           </span>
         </p>
       </div>
       {/* Mobile Navigation only shows when screen is sm */}
 
-
-           
-
-
-
-
       <div
         id="container"
         className=" relative h-full w-full flex px-6 sm:pb-0 gap-5 box-border justify-center  items-center pb-6 overflow-hidden sm:flex-col   "
       >
-
-        <div className={viewMenu?" absolute h-[97.2%] w-full flex px-6 sm:pb-0 gap-5 box-border justify-center  items-center  overflow-hidden sm:flex-col pointer-events-none ":" hidden absolute h-full w-full px-6 sm:pb-0 gap-5 box-border justify-center  items-center  overflow-hidden sm:flex-col pointer-events-none "}>
+        <div
+          className={
+            viewMenu
+              ? " absolute h-[97.2%] w-full flex px-6 sm:pb-0 gap-5 box-border justify-center  items-center  overflow-hidden sm:flex-col pointer-events-none "
+              : " hidden absolute h-full w-full px-6 sm:pb-0 gap-5 box-border justify-center  items-center  overflow-hidden sm:flex-col pointer-events-none "
+          }
+        >
           <div className=" relative sm:absolute z-30 sm:h-[95%] sm:w-[97%] flex bg-card border-border border-[1px] rounded-md w-[70%] h-full flex-col  box-border  items-center justify-center pointer-events-auto p-5">
             <SelectedPage
               SelectedMenu={SelectedMenu}
-              back={()=>{
-                SetViewMenu(false)
+              back={() => {
+                SetViewMenu(false);
               }}
             />
-
           </div>
-          <div className=" sm:hidden relative  w-[30%] h-full  pointer-events-none">
+          <div className=" sm:hidden relative  w-[30%] h-full  pointer-events-none"></div>
+        </div>
 
-          </div>
-        </div> 
-        
-        
         {/* CARD 1 */}
         <div
           id="card-left"
@@ -257,18 +314,40 @@ const handleKeyDown = (event: any) => {
               ? " sm:absolute sm:h-[95%] sm:w-[97%] relative bg-card border-border border-[1px] rounded-md w-[70%] h-full   box-border  flex items-center justify-center"
               : " sm:absolute sm:h-[95%] sm:w-[97%] relative bg-card sm:hidden border-border border-[1px] rounded-md w-[70%] h-full   box-border  flex items-center justify-center"
           }
-          >
+        >
+          <div id="uploading-image-layer-1" className=" w-[95%] h-[95%] rounded-md flex flex-col box-border  absolute z-100 pointer-events-none ">
+            <div className=" h-full w-full  gap-5   flex items-end justify-end  ">
+              <label
+                htmlFor="file-upload"
+                className=" animate__animated animate__fadeInUp animate__delay-2s  border-[1px] border-border flex items-center justify-center  px-3 py-2 w-30 cursor-pointer text-accent-foreground m-7 bg-background/20 backdrop-blur-sm rounded-md text-sm hover:bg-accent  z-20 pointer-events-auto "
+              >
+                <UploadIcon className="sm:mr-2 mr-2 h-4 w-4 " />
+                Upload
+              </label>
+              <input
+                id="file-upload"
+                type="file"
+                className="hidden "
+              
+                onChange={uploadImage}
+              />
+            </div>
+            <div className=" sm:pt-7 flex w-full h-[200px] pt-8 flex-col  justify-between  "></div>
+          </div>
+
+
           <div
-            id="card-left-container"
-            className=" w-[95%] h-[95%] rounded-md flex flex-col  "
+            id="card-left-container-layer-2"
+            className=" w-[95%] h-[95%] rounded-md flex flex-col box-border  "
           >
             {/* This page is for chat on left container */}
+
             <div
               id="chat-part"
               className=" w-full h-full overflow-y-scroll relative border-[#48df48]  border-[1px] rounded-md"
             >
               <div
-                className=" relative min-h-[400px] w-full flex flex-col gap-5 items-center py-5  "
+                className=" relative min-h-[400px] w-full flex flex-col gap-5 items-center py-5   "
                 id="bottom-scroll"
               >
                 {messages.length >= 2 ? (
@@ -276,10 +355,15 @@ const handleKeyDown = (event: any) => {
                     e.role != "user" ? (
                       <AIMSG e={e} key={key} />
                     ) : (
-                      <UserMSG e={e} mkey={key} key={key} onDelete={deleteItem} />
+                      <UserMSG
+                        e={e}
+                        mkey={key}
+                        key={key}
+                        onDelete={deleteItem}
+                      />
                     )
                   )
-                  ) : (
+                ) : (
                   <EmtScreen />
                 )}
               </div>
@@ -335,33 +419,32 @@ const handleKeyDown = (event: any) => {
               {/* bottom controls */}
 
               <Button
-variant="outline"
-className={loading?" animate__animated animate__fadeInUp min-w-24 text-accent-foreground  absolute  flex self-center  gap-2  mt-[40px] ":" min-w-24 text-accent-foreground  absolute   self-center  gap-2  translate-y-[40px] animate-pulse hidden "}
-onClick={
-()=>{
-  cancelRequest()
-}
-}>
-
-
-<StopIcon className="sm:mr-0 mr-2 h-4 w-4 text-accent-foreground animate-spin  " />
-                 Stop Responding
-</Button>
+                variant="outline"
+                className={
+                  loading
+                    ? " animate__animated animate__fadeInUp min-w-24 text-accent-foreground  absolute  flex self-center  gap-2  mt-[40px] "
+                    : " min-w-24 text-accent-foreground  absolute   self-center  gap-2  translate-y-[40px] animate-pulse hidden "
+                }
+                onClick={() => {
+                  cancelRequest();
+                }}
+              >
+                <StopIcon className="sm:mr-0 mr-2 h-4 w-4 text-accent-foreground animate-spin  " />
+                Stop Responding
+              </Button>
 
               <div className="flex w-full flex-row gap-4 relative">
-
-
                 {/* this button clear the data in side the message storage */}
-               
 
                 <Button
                   variant="outline"
                   className=" w-24 text-accent-foreground sm:w-14"
                   onClick={() => {
-
-                    
-
-                    if (window.confirm('Sure to erase? No magic can bring it back!')) {
+                    if (
+                      window.confirm(
+                        "Sure to erase? No magic can bring it back!"
+                      )
+                    ) {
                       localStorage.setItem(
                         "messages",
                         '[{ "role": "itsy", "products": [],"message":"Hey dear, I\'m ITSY your culinary spider buddy! share your items, and I\'ll weave dishes so snappy!", "direction":"","image":"" }]'
@@ -370,19 +453,19 @@ onClick={
                         JSON.parse(localStorage.getItem("messages") || "")
                       );
 
-
-                      localStorage.setItem('menus','[]')
-                      setMenus(JSON.parse(localStorage.getItem('menus')||""))
-                      
+                      localStorage.setItem("menus", "[]");
+                      setMenus(JSON.parse(localStorage.getItem("menus") || ""));
 
                       toast({
                         title: "Poof! All Gone!",
-                        description: "Everything's been swept away, as clean as your messenger box!",
+                        description:
+                          "Everything's been swept away, as clean as your messenger box!",
                       });
                     } else {
                       toast({
                         title: "Erase Cancelled! ",
-                        description: "Oh, you decided to stick around... Let's keep making memories together!",
+                        description:
+                          "Oh, you decided to stick around... Let's keep making memories together!",
                       });
                     }
                   }}
@@ -392,106 +475,105 @@ onClick={
                 </Button>
                 {/* this button clear the data in side the message storage */}
 
-                
-
                 <Button
-
-                  disabled={loading?true:false}
+                  disabled={loading ? true : false}
                   className="px-10 w-full gap-2"
                   onClick={() => {
-                    
                     toast({
                       title: "Loading... ",
                       description: "Please wait for i searching for your menus",
                     });
-                    
-                    let product:any = []
-                    messages[messages.length-1].products.map((e:any)=>(
-                      product = [...product,`${e.itemsQK} ${e.itemsName}`]
-              
-                    ))
 
-                    console.log(product.join(' '))
-                    
-                    
-                    
-                    replyChatBeforeRES()
-                  
-                    SetLoading(true)
-                    OpenAI({ product: `${product.join(' ')}` })
-                    .then((result:any[]) => {
-                      console.log("Menu API Response")
-                      console.table(result)
-                        if (result.length ==0) {
+                    let product: any = [];
+                    messages[messages.length - 1].products.map(
+                      (e: any) =>
+                        (product = [...product, `${e.itemsQK} ${e.itemsName}`])
+                    );
+
+                    console.log(product.join(" "));
+
+                    replyChatBeforeRES();
+
+                    SetLoading(true);
+                    OpenAIText({ product: `${product.join(" ")}` })
+                      .then((result: any[]) => {
+                        console.log("Menu API Response");
+                        console.table(result);
+
+                        if (result.length == 0) {
                           toast({
                             title: "Stop Responding!",
-                            description: "Your request for cancellation of menu has been successfully implemented",
+                            description:
+                              "Your request for cancellation of menu has been successfully implemented",
                           });
-                          SetLoading(false)
-
+                          SetLoading(false);
 
                           messages.map((e: any) =>
                             setMessages([
                               ...messages,
                               {
                                 products: [...e.products],
-                                message: `Your request for cancellation of menu has been successfully implemented! `
-                                ,
+                                message: `Your request for cancellation of menu has been successfully implemented!`,
                                 direction: "outgoing",
                                 role: "assistant",
                                 image: "",
                               },
                             ])
                           );
-                        }else{
-                        SetLoading(false)
-                        setMenus(result)
-                        toast({
-                          title: "DONE... ",
-                          description: "Here are your menus",
-                        });
-                        
+                        } else {
+                          SetLoading(false);
+                          setMenus(result);
+                          toast({
+                            title: "DONE... ",
+                            description: "Here are your menus",
+                          });
 
-                         if (result) {
-                          let menus_name:any = []
-                          result.map((e:any,key:any)=>{
-                            menus_name=[...menus_name, `${key+1}. ${e.name}`] 
-                          })
-                          messages.map((e: any) =>
-                            setMessages([
-                              ...messages,
-                              {
-                                products: [...e.products],
-                                message: `🕸️Hello, dear! Like a diligent spider 🕷️, your menus are spun. Thanks for your patience, as precious as dew on a web. Enjoy your menus!
-          
-                                Here are your menus:
-                                 ${menus_name.join(' \n')} \n`
-                                ,
-                                direction: "outgoing",
-                                role: "assistant",
-                                image: "",
-                              },
-                            ])
-                          );
+                          if (result) {
+                            let menus_name: any = [];
+
+                            result.map((e: any, key: any) => {
+                              menus_name = [
+                                ...menus_name,
+                                `${key + 1}. ${e.name}`,
+                              ];
+                            });
+
+                            messages.map((e: any) =>
+                              setMessages([
+                                ...messages,
+                                {
+                                  products: [...e.products],
+                                  message: `🕸️Hello, dear! Like a diligent spider 🕷️, your menus are spun. Thanks for your patience, as precious as dew on a web. Enjoy your menus!
+            
+                                  Here are your menus:
+                                  ${menus_name.join(" \n")} \n`,
+                                  direction: "outgoing",
+                                  role: "assistant",
+                                  image: "",
+                                },
+                              ])
+                            );
+                          }
                         }
-                        // replyChatAfterRES()
-                      }
                       })
-                    .catch((error:any) => {
-                      SetLoading(false)
-                      console.log(error);
-                    });
+                      .catch((error: any) => {
+                        SetLoading(false);
+                        console.log(error);
+                      });
                   }}
                 >
                   Generate Menus
-                  {loading?<ReloadIcon className="mr-2 h-4 w-4 animate-spin" />:
-                  <DiscordLogoIcon className="mr-2 h-4 w-4 text-accent text-xl" />}
+                  {loading ? (
+                    <ReloadIcon className="mr-2 h-4 w-4 animate-spin" />
+                  ) : (
+                    <DiscordLogoIcon className="mr-2 h-4 w-4 text-accent text-xl" />
+                  )}
                 </Button>
               </div>
             </div>
           </div>
         </div>
-        
+
         {/* This page is for action on left container */}
 
         {/* CARD 2 */}
@@ -514,36 +596,32 @@ onClick={
 
           {/* container of menus here */}
           <div className=" h-full w-full border-[#3dd44b] border-[1px] rounded-md flex flex-col gap-4 py-5">
-
-
-          {loading?
-           <MenuLoader/>
-          
-
-          :
-          
-            menus.length !=0?
-            
-            menus.map((e,key)=>(
-              
-              <div className="flex w-full justify-between px-6 items-center" key={key}>
-
-                <h1 className=" text-sm  text-accent-foreground max-w-[60%] text-left"> {key+1}.  {e.name}</h1>
-                <Button size="sm" onClick={()=>{
-                  SetViewMenu(true)
-                  SetSelectedMenu(e)
-                }} >View</Button>
-              </div>
-            )):""
-          
-
-          
-          
-        
-          }  
-          
-            
-                
+            {loading ? (
+              <MenuLoader />
+            ) : menus.length != 0 ? (
+              menus.map((e, key) => (
+                <div
+                  className="flex w-full justify-between px-6 items-center"
+                  key={key}
+                >
+                  <h1 className=" text-sm  text-accent-foreground max-w-[60%] text-left">
+                    {" "}
+                    {key + 1}. {e.name}
+                  </h1>
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      SetViewMenu(true);
+                      SetSelectedMenu(e);
+                    }}
+                  >
+                    View
+                  </Button>
+                </div>
+              ))
+            ) : (
+              ""
+            )}
           </div>
           {/* container of menus here */}
         </div>

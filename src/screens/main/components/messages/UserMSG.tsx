@@ -7,7 +7,7 @@ function UserMSG({ e, onDelete, mkey }: any) {
       <div className="px-5 py-2 min-w-[10px] max-w-[60%] md:max-w-[90%] mr-5 text-base text-white rounded-lg  bg-[#3dd44b]">
         {e.image ? (
           <>
-            <p className="pt-1 pb-4 ">{e.message}</p>
+            <p className="text-white/80 text-sm italic md:not-italic mb-2 ">{e.message}</p>
             <img
               className="object-contain rounded-lg min-w-56 min-h-52 max-h-56"
               src={e.image}
@@ -17,6 +17,8 @@ function UserMSG({ e, onDelete, mkey }: any) {
           ""
         )}
 
+
+       {!e.image? 
         <div className=" flex flex-col gap-0">
           <p className=" text-white/80 text-sm italic md:not-italic mb-2">
             {e.message}
@@ -54,6 +56,7 @@ function UserMSG({ e, onDelete, mkey }: any) {
             ))}
           </table>
         </div>
+        :""}
       </div>
     </div>
   );

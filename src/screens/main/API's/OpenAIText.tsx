@@ -5,7 +5,8 @@ import CryptoJS from "crypto-js"
 
 let cancelRequest: () => void; 
 
-async function OpenAI({product}:any ) {
+async function OpenAIText({product}:any ) {
+
   const source = axios.CancelToken.source();
 
   
@@ -153,6 +154,6 @@ async function OpenAI({product}:any ) {
         
 }
 
-export default OpenAI
+export default OpenAIText
 
 export { cancelRequest };
