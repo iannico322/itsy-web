@@ -122,9 +122,15 @@ function App() {
         </div>
         {/* Background HERE */}
 
-        {/* <p className=" text-accent-foreground">Welcome to ITSY Web</p>
-        Nicolas Gwapo 
-        
+        {/* 
+        This is a capstone project, it was developed by a team of super smart students
+
+          Ian Nico Caulin
+          Mark Gil Rusian
+          Marry Joy Colis
+          Rishie ky Ravidas      
+          
+        ===============================================================================
         */}
       </div>
     </div>

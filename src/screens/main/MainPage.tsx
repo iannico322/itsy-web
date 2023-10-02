@@ -147,6 +147,12 @@ useEffect(() => {
 
   const uploadImage= (event:any)=> {
 
+    //this code here run after uploading image
+    toast({
+      title: "Analyzing Image...",
+      description:
+        "wait up negga im analyzing your image...!",
+    });
     messages.map((e: any) =>
       setMessages([
         ...messages,
@@ -167,64 +173,49 @@ useEffect(() => {
       ])
     );
 
-    console.log("im running")
-    toast({
-      title: "Analyzing Image...",
-      description:
-        "wait up negga im analyzing your image...!",
-    });
+    //this code here use the image recognization component then executes codes just like axios process
      OpenAIImage({ image: event.target.files[0] }).then(( result:any)=>{
-      
+        let items:any = []
 
-      let items:any = []
-
-
-
-
-      if (result == "No Food found!") {
-        toast({
-        title: "Done analyzing!",
-        description:
-          "No Food found!",
-      })
-      }else{
-
-        JSON.parse(result)[0].food_indentified.map((e:any)=>(
-          items = [...items,`${e.quantity} ${e.name} `]
-        ))
-
-        toast({
+        if (result == "No Food found!") {
+          toast({
           title: "Done analyzing!",
           description:
-            "I’ve taken a peek at your image and found the following adorable yummy dummy item(s)",
+            "No Food found!",
         })
-
-      }
+        }else{
+          JSON.parse(result)[0].food_indentified.map((e:any)=>(
+            items = [...items,`${e.quantity} ${e.name} `]
+          ))
+          toast({
+            title: "Done analyzing!",
+            description:
+              "I’ve taken a peek at your image and found the following adorable yummy dummy item(s)",
+          })
+        }
       
-      messages.map((e: any) =>
-      setMessages([
-        ...messages,
-        {
-          products: [...e.products],
-          message: `Identify food items on this image`,
-          direction: "outgoing",
-          role: "user",
-          image: URL.createObjectURL(event.target.files[0]),
-        },
-        {
-          products: [...e.products],
-          message: result == "No Food found!"? `🕸️Hello, dear! I’m sorry, but I couldn’t find any food in the image you provided.` : `🕸️Hello, dear! I’ve taken a peek at your image and found the following adorable yummy dummy item(s):\n\n ${items.join('\n')}` ,
-          direction: "outgoing",
-          role: "assistant",
-          image: "",
-        },
-      ])
-    )
-      
-      
-    })
-    
-    
+        messages.map((e: any) =>
+        setMessages([
+          ...messages,
+          {
+            products: [...e.products],
+            message: `Identify food items on this image`,
+            direction: "outgoing",
+            role: "user",
+            image: URL.createObjectURL(event.target.files[0]),
+          },
+          {
+            products: [...e.products],
+            message: result == "No Food found!"? `🕸️Hello, dear! I’m sorry, but I couldn’t find any food in the image you provided.` : `🕸️Hello, dear! I’ve taken a peek at your image and found the following adorable yummy dummy item(s):\n\n ${items.join('\n')}` ,
+            direction: "outgoing",
+            role: "assistant",
+            image: "",
+          },
+        ])
+      )
+        
+        
+      })
   }
 
 
@@ -373,6 +364,8 @@ const handleKeyDown = (event: any) => {
                 className=" relative min-h-[400px] w-full flex flex-col gap-5 items-center py-5   "
                 id="bottom-scroll"
               >
+
+      {/* this code here iterate the object value and direct it the the component where it belongs */}
                 {messages.length >= 2 ? (
                   messages.map((e, key) =>
                     e.role != "user" ? (
@@ -389,6 +382,7 @@ const handleKeyDown = (event: any) => {
                 ) : (
                   <EmtScreen />
                 )}
+       {/* this code here iterate the object value and direct it the the component where it belongs */} 
               </div>
             </div>
             {/* This page is for chat on left container */}
@@ -457,8 +451,8 @@ const handleKeyDown = (event: any) => {
               </Button>
 
               <div className="flex w-full flex-row gap-4 relative">
-                {/* this button clear the data in side the message storage */}
 
+                {/* this button clear the data in side the message storage */}
                 <Button
                   variant="outline"
                   className=" w-24 text-accent-foreground sm:w-14"
@@ -497,7 +491,9 @@ const handleKeyDown = (event: any) => {
                   <span className=" sm:hidden">Erase</span>
                 </Button>
                 {/* this button clear the data in side the message storage */}
+                
 
+                {/* this button call the openai menu generator component and throw a bunch of code the the developer forgots how it works */}
                 <Button
                   disabled={loading ? true : false}
                   className="px-10 w-full gap-2"
@@ -592,6 +588,8 @@ const handleKeyDown = (event: any) => {
                     <DiscordLogoIcon className="mr-2 h-4 w-4 text-accent text-xl" />
                   )}
                 </Button>
+                {/* this button call the openai menu generator component and throw a bunch of code the the developer forgots how it works */}
+
               </div>
             </div>
           </div>
