@@ -94,7 +94,6 @@ async function OpenAIText({product}:any ) {
     
         
             `
-         
   
         },
         { 
@@ -109,6 +108,47 @@ async function OpenAIText({product}:any ) {
           `,
       
         },
+        {
+        
+          role:"user",content:`
+          Generate at least 2 dishes in JSON format based on the following products, preferences, and language:
+  
+          Products: [chicken,pieces dried bay leave, soy sauce,white vinegar,cloves garlic,water,cooking oil,sugar, salt,peppercorn]
+          Preferences: [Filipino Style]
+          Language: [UwU]
+          
+          Expected Output:
+          [
+            {
+              "name": "Dish Name",
+              "ingredients": ["ingredient1", "ingredient2", ...],
+              "cooking_steps": ["1. step1", "2. step2", ...]
+            },
+  
+      
+          `
+
+      },
+      { 
+        "role": "assistant", "content": `[
+          {
+              "name": "Chicken Adobo >_<",
+              "ingredients": ["2 lbs chicken", "3 pieces dried bay leaves","6 tablespoons soy sauce","4 tablespoons white vinega","5 cloves garlic","1 1/2 cups water","3 tablespoons cooking oil","1 teaspoon sugar","1/4 teaspoon salt","1 teaspoon whole peppercorn"],
+              "cooking_steps": [
+                "1. OwO Combine chicken, soy sauce, and garlic in a warge bowl. Mix well. Mawinate the chicken fow at weast 1 hour. Notice: the wongew the time, the bettew! ^w^ 2 lbs chicken, 6 tabwespoons soy sauce",
+                "2. Heat a cooking pot. Pour cooking oiw. 3 tabwespoons cooking oiw OwO",
+                "3. When the oiw is hot enough, pan-fwy the mawinated chicken fow 2 minutes pew side. UwU",
+                "4. Pour-in the wemaining mawinade, incwuding garlic. Add watew. Bwing to a boiw. 1 1/2 cups watew",
+                "5. Add dwied bay weaves and whole peppewcorn. Simmew fow 30 minutes ow untiw the chicken gets tendew. 3 pieces dwied bay weaves, 1 teaspoon whole peppewcorn",
+                "6. Add vinegar. Stiw and cook fow 10 minutes. 4 tabwespoons white vinegar",
+                "Put-in the sugaw and sawt. Stiw and tuwn the heat off. Sewve hot. Shawe and Enjoy! ^_^ 1 teaspoon sugaw, 1/4 teaspoon sawt"
+                ]
+          },
+          ...
+      ]
+        `,
+    
+      },
           apiMessages
           
         ]

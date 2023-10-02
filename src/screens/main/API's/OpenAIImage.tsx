@@ -119,7 +119,7 @@ async function OpenAIImage({image}:any ) {
                   "role":"user","content":` what is the food items on this paragraph: "a close up of a dog"`
                 },
                 { 
-                  "role": "assistant", "content": `No Food found`
+                  "role": "assistant", "content": `No Food found!`
                   
               
                 },
