@@ -91,7 +91,7 @@ async function OpenAIImage({image}:any ) {
     
             const textresponse = await axios.post("https://api.openai.com/v1/chat/completions", apiRequestBody, {
               headers: {
-                Authorization: `Bearer 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`,
+                Authorization: `Bearer ${ decryptText(localStorage.getItem('none')||"")}`,
                 "Content-Type": "application/json",
               }
             });
