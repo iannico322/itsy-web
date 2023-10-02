@@ -152,7 +152,7 @@ useEffect(() => {
         ...messages,
         {
           products: [...e.products],
-          message: `Identify food items on this image`,
+          message: `Could you please identify the food items in this image?`,
           direction: "outgoing",
           role: "user",
           image: URL.createObjectURL(event.target.files[0]),
@@ -175,7 +175,16 @@ useEffect(() => {
     });
      OpenAIImage({ image: event.target.files[0] }).then(( result:any)=>{
       
-      console.log(result == "No Food")
+
+      let items:any = []
+      result == "No Food found!"?""
+      :
+      JSON.parse(result)[0].food_indentified.map((e:any)=>(
+        items = [...items,`${e.quantity} ${e.name} `]
+      ))
+       
+      
+      
       messages.map((e: any) =>
       setMessages([
         ...messages,
@@ -188,7 +197,7 @@ useEffect(() => {
         },
         {
           products: [...e.products],
-          message: result == "No Food"? `🕸️Hello, dear! I dont Find any food on your Image` : `🕸️Hello, dear! I have i dentify the items on the image \n Items:\n ${ result.join("\n")}` ,
+          message: result == "No Food found!"? `🕸️Hello, dear! I’m sorry, but I couldn’t find any food in the image you provided.` : `🕸️Hello, dear! I’ve identified the items in the image.\n\n Here they are items:\n ${items.join('\n')}` ,
           direction: "outgoing",
           role: "assistant",
           image: "",
@@ -197,8 +206,6 @@ useEffect(() => {
     )
       
       
-    }).catch((e:any)=>{
-      console.log(e)
     })
     
     

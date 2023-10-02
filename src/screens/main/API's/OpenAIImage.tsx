@@ -42,7 +42,23 @@ async function OpenAIImage({image}:any ) {
         const response = await axios(options);
         console.log(response.data.description.captions[0].text)
 
-         const apiMessages =  { role: "user", content:` what is the food items on this paragraph: " ${response.data.description.captions[0].text}"`}
+         const apiMessages =  { role: "user", content:` what is the food items on this paragraph: " ${response.data.description.captions[0].text}" 
+         expected output:
+          [
+            {"food_indentified": [
+                {
+                  "name":"food1",
+                  "quantity": "1pc"
+                },
+                {
+                  "name":"food2",
+                  "quantity": "1pc"
+                },
+                ...
+            ]
+            }
+        ]
+         `}
 
 
           const apiRequestBody = {
@@ -50,14 +66,35 @@ async function OpenAIImage({image}:any ) {
               "messages": [
                 { 
                   "role": "system",
-                   "content": `You are a professional chef with 10 years of experience. Your task is to generate a list of recipes. Each recipe should be in the following format: \n\n{\n  \"name\": \"dish name\",\n  \"ingredients\": [\"ingredient1\", \"ingredient2\", ...],\n  \"cooking_steps\": [\"1. step1\", \"2. step2\", ...]\n}\n\nRemember to provide detailed and professional descriptions for each ingredient and cooking step.`,
+                   "content": `You are a professional advance AI that can extract Food from a paragrap. Your task is to generate a list of foods you identify on a sentences. This should be the following format: [{"food_indentified": [
+                    {
+                      "name":"food1",
+                      "quantity": "1pc"
+                     },
+                     {
+                      "name":"food2",
+                      "quantity": "1pc"
+                     },
+                     ...
+                   ]
+                  }]
+                  
+                  make sure to follow that format if you identify any Foods Items, if none just say  : No Food found!
+                  
+                  `,
               
                 },
                 {
                   "role":"user","content":` what is the food items on this paragraph: " a close up of a banana"`
                 },
                 { 
-                  "role": "assistant", "content": `{foods:["Banana"]}`
+                  "role": "assistant", "content": `[{"food_indentified": [
+                    {
+                      "name":"banana",
+                      "quantity": "1ps"
+                     }
+                   ]
+                  }]`
               
                 },
 
@@ -65,8 +102,17 @@ async function OpenAIImage({image}:any ) {
                   "role":"user","content":` what is the food items on this paragraph: "an apple and mango in a table"`
                 },
                 { 
-                  "role": "assistant", "content": `{foods:["apple","mango"]}`
-              
+                  "role": "assistant", "content": `[{"food_indentified": [
+                    {
+                      "name":"apple",
+                      "quantity": "1ps"
+                     },
+                     {
+                      "name":"mango",
+                      "quantity": "1ps"
+                     }
+                   ]
+                  }]`
                 },
 
                 {
@@ -78,10 +124,16 @@ async function OpenAIImage({image}:any ) {
               
                 },
                 {
-                  "role":"user","content":` what is the food items on this paragraph: "a close up of a dog"`
+                  "role":"user","content":` what is the food items on this paragraph: "2 banana on the table"`
                 },
                 { 
-                  "role": "assistant", "content": `No Food found`
+                  "role": "assistant", "content": `[{"food_indentified": [
+                    {
+                      "name":"shrimp",
+                      "quantity": "2ps"
+                     }
+                   ]
+                  }]`
                   
               
                 },
@@ -89,21 +141,22 @@ async function OpenAIImage({image}:any ) {
               ]
             }
     
-            const textresponse = await axios.post("https://api.openai.com/v1/chat/completions", apiRequestBody, {
-              headers: {
-                Authorization: `Bearer ${ decryptText(localStorage.getItem('none')||"")}`,
-                "Content-Type": "application/json",
-              }
-            });
 
+            try {
+              const textresponse = await axios.post("https://api.openai.com/v1/chat/completions", apiRequestBody, {
+                headers: {
+                  Authorization: `Bearer ${ decryptText(localStorage.getItem('none')||"")}`,
+                  "Content-Type": "application/json",
+                }
+              });
 
-           try {
-              console.log("right")
-              return JSON.parse(textresponse.data.choices[0].message.content).foods ;
-           } catch (error) {
-            console.log("wrong")
-              return "No Food"
-           }
+              console.log(textresponse.data.choices[0].message.content)
+              return textresponse.data.choices[0].message.content ;
+            } catch (error) {
+               return "Something went wrong";
+            }
+              
+           
            
       
       

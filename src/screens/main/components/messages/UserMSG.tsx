@@ -9,7 +9,7 @@ function UserMSG({ e, onDelete, mkey }: any) {
           <>
             <p className="text-white/80 text-sm italic md:not-italic mb-2 ">{e.message}</p>
             <img
-              className="object-contain rounded-lg min-w-56 min-h-52 max-h-56"
+              className=" object-contain rounded-lg w-[100%] max-h-52 sm:max-h-20"
               src={e.image}
             />
           </>
