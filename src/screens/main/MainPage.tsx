@@ -176,6 +176,8 @@ useEffect(() => {
     //this code here use the image recognization component then executes codes just like axios process
      OpenAIImage({ image: event.target.files[0] }).then(( result:any)=>{
         let items:any = []
+        let name=""
+        let qk=""
 
         if (result == "No Food found!") {
           toast({
@@ -184,9 +186,15 @@ useEffect(() => {
             "No Food found!",
         })
         }else{
+         
           JSON.parse(result)[0].food_indentified.map((e:any)=>(
-            items = [...items,`${e.quantity} ${e.name} `]
+            name= e.name,
+            qk =e.quantity,
+            items = [...items,`${qk} ${e.name} `]
+            
           ))
+        
+          
           toast({
             title: "Done analyzing!",
             description:
@@ -209,6 +217,16 @@ useEffect(() => {
             message: result == "No Food found!"? `🕸️Hello, dear! I’m sorry, but I couldn’t find any food in the image you provided.` : `🕸️Hello, dear! I’ve taken a peek at your image and found the following adorable yummy dummy item(s):\n\n ${items.join('\n')}` ,
             direction: "outgoing",
             role: "assistant",
+            image: "",
+          },
+          {
+            products: [
+              ...e.products,
+              { itemsName: `${name}`, itemsQK: `${qk}` },
+            ],
+            message: "This is my updated Item",
+            direction: "outgoing",
+            role: "user",
             image: "",
           },
         ])
