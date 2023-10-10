@@ -379,7 +379,7 @@ const handleKeyDown = (event: any) => {
               className=" w-full h-full overflow-y-scroll relative border-[#48df48]  border-[1px] rounded-md"
             >
               <div
-                className=" relative min-h-[400px] w-full flex flex-col gap-5 items-center py-5   "
+                className=" relative min-h-[400px] w-full flex flex-col gap-5 items-center py-5 pb-16 sm:pb-11   "
                 id="bottom-scroll"
               >
 
