@@ -39,7 +39,7 @@ function App() {
 
         <div className=" flex items-center gap-4">
           <Button>
-            <a href="#" target="_blank">
+            <a href="https://drive.google.com/drive/u/0/folders/1MeVEI-Y91vpp7eWCwO9UcXjKcZmPHJau" target="_blank">
               Download App
             </a>
           </Button>
@@ -78,7 +78,7 @@ function App() {
                 </Button>
 
                 <Button size="lg">
-                  <a href="#" target="_blank" className=" sm:text-xs ">
+                  <a href="https://drive.google.com/drive/u/0/folders/1MeVEI-Y91vpp7eWCwO9UcXjKcZmPHJau" target="_blank" className=" sm:text-xs ">
                     Download App
                   </a>
                 </Button>
