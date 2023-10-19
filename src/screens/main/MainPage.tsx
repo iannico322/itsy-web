@@ -87,19 +87,28 @@ useEffect(() => {
 
 
   function deleteItem(indexMain: any, indexToDelete: any) {
-    messages[indexMain].products.splice(indexToDelete, 1);
 
-    setMessages([...messages, messages[indexMain]]);
+    console.log(indexMain, indexToDelete)
 
-    console.log(messages[indexMain], "yawa", indexMain);
+    // Create a new products array for the new message that excludes the removed product
+    let newProducts = messages[indexMain].products.filter((_:any, index:any) => index !== indexToDelete);
+
+    // Add a new message with the new products array
+    setMessages([...messages, {
+      products: newProducts,
+      message: "This is my updated Item",
+      direction: "outgoing",
+      role: "user",
+      image: "",
+    }]);
   }
 
   function replyChatBeforeRES() {
-    messages.map((e: any) =>
+  
       setMessages([
         ...messages,
         {
-          products: [...e.products],
+          products: [...messages[messages.length - 1].products],
           message: `🕸️Hello, dear! Like a diligent spider 🕷️, I’m spinning your menus. Your patience is as precious as dew on a web. I’m fetching your menus! 🌼
 
           Please wait while I’m searching for your menus…`,
@@ -108,7 +117,7 @@ useEffect(() => {
           image: "",
         },
       ])
-    );
+   
   }
 
 
@@ -124,21 +133,18 @@ useEffect(() => {
       });
       
     }else{
-      messages.map((e) =>
+     console.log({ itemName: items.name, itemQK: items.qk })
       setMessages([
         ...messages,
         {
-          products: [
-            ...e.products,
-            { itemsName: `${items.name}`, itemsQK: `${items.qk}` },
-          ],
+          products: messages[messages.length - 1].products.concat([{ itemName: items.name, itemQK: items.qk }]),
           message: "This is my updated Item",
           direction: "outgoing",
           role: "user",
           image: "",
         },
       ])
-    );
+   
     setItem({ name: "", qk: "1" });
     }
     
@@ -153,25 +159,25 @@ useEffect(() => {
       description:
         "wait up negga im analyzing your image...!",
     });
-    messages.map((e: any) =>
+
       setMessages([
         ...messages,
         {
-          products: [...e.products],
+          products: [...messages[messages.length - 1].products],
           message: `Could you please identify the food items in this image?`,
           direction: "outgoing",
           role: "user",
           image: URL.createObjectURL(event.target.files[0]),
         },
         {
-          products: [...e.products],
+          products: [...messages[messages.length - 1].products],
           message: `🕸️Hello, dear! Im about to scan your image, please wait for a while`,
           direction: "outgoing",
           role: "assistant",
           image: "",
         },
       ])
-    );
+  
 
     //this code here use the image recognization component then executes codes just like axios process
      OpenAIImage({ image: event.target.files[0] }).then(( result:any)=>{
@@ -202,35 +208,32 @@ useEffect(() => {
           })
         }
       
-        messages.map((e: any) =>
+       
         setMessages([
           ...messages,
           {
-            products: [...e.products],
+            products: [...messages[messages.length - 1].products],
             message: `Identify food items on this image`,
             direction: "outgoing",
             role: "user",
             image: URL.createObjectURL(event.target.files[0]),
           },
           {
-            products: [...e.products],
+            products: [...messages[messages.length - 1].products],
             message: result == "No Food found!"? `🕸️Hello, dear! I’m sorry, but I couldn’t find any food in the image you provided.` : `🕸️Hello, dear! I’ve taken a peek at your image and found the following adorable yummy dummy item(s):\n\n ${items.join('\n')}` ,
             direction: "outgoing",
             role: "assistant",
             image: "",
           },
           {
-            products: [
-              ...e.products,
-              { itemsName: `${name}`, itemsQK: `${qk}` },
-            ],
+            products: messages[messages.length - 1].products.concat([{ itemName: name, itemQK: qk }]),
             message: "This is my updated Item",
             direction: "outgoing",
             role: "user",
             image: "",
           },
         ])
-      )
+     
         
         
       })
@@ -524,7 +527,7 @@ const handleKeyDown = (event: any) => {
                     let product: any = [];
                     messages[messages.length - 1].products.map(
                       (e: any) =>
-                        (product = [...product, `${e.itemsQK} ${e.itemsName}`])
+                        (product = [...product, `${e.itemQK} ${e.itemName}`])
                     );
 
                     console.log(product.join(" "));
@@ -532,7 +535,7 @@ const handleKeyDown = (event: any) => {
                     replyChatBeforeRES();
 
                     SetLoading(true);
-                    OpenAIText({ product: `${product.join(" ")}` })
+                    OpenAIText({ product: `${product.join(",")}` })
                       .then((result: any[]) => {
                         console.log("Menu API Response");
                         console.table(result);
