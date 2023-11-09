@@ -38,9 +38,9 @@ function UserMSG({ e, onDelete, mkey }: any) {
                   key={key}
                 >
                   <td className="py-1 sm:px-3 px-5 text-center">
-                    {z.itemName}
+                    {z.name}
                   </td>
-                  <td className="py-1 sm:px-3 px-3 text-center">{z.itemQK}</td>
+                  <td className="py-1 sm:px-3 px-3 text-center">{z.quantity}</td>
                   <td className=" py-1 sm:px-3 px-6 text-center items-center">
                     <Button
                       variant="secondary"

@@ -28,6 +28,7 @@ import OpenAIText, {cancelRequest }  from "./API's/OpenAIText";
 import OpenAIImage from "./API's/OpenAIImage";
 import SelectedPage from "./SelectedPage";
 import MenuLoader from "@/components/loader/menuLoader";
+import { Switch } from "@/components/ui/switch";
 
 const MainPage = () => {
   type MessageType = {
@@ -49,7 +50,7 @@ const MainPage = () => {
     JSON.parse(localStorage.getItem("messages") || "")
   );
 
-  const [items, setItem]: any = useState({ name: "", qk: "" });
+  const [items, setItem]: any = useState({ name: "", quantity: "" });
   const [pageAtChat, setpageAtChat] = useState(true);
   const [menus,setMenus] = useState <MenuType[]> (JSON.parse(localStorage.getItem("menus") || ""));
   const [SelectedMenu, SetSelectedMenu] = useState<MenuType>({
@@ -63,6 +64,7 @@ const MainPage = () => {
   const [viewMenu,SetViewMenu] = useState(false)
 
   const [loading,SetLoading]= useState(false)
+  const [isChecked, setIsChecked] = useState(localStorage.getItem('mode-4') === 'true');
 
 
 //this auto save the messages of the users
@@ -126,18 +128,18 @@ useEffect(() => {
 
   //This function add items to the messages object
   function addItems() {
-    if (items.name=="" || items.qk=="") {
+    if (items.name=="" || items.quantity=="") {
       toast({
         title: "Oopsie My Dear!",
         description: "Hold on, sweetie! Make sure all the little boxes are filled.",
       });
       
     }else{
-     console.log({ itemName: items.name, itemQK: items.qk })
+     console.log({ name: items.name, quantity: items.quantity })
       setMessages([
         ...messages,
         {
-          products: messages[messages.length - 1].products.concat([{ itemName: items.name, itemQK: items.qk }]),
+          products: messages[messages.length - 1].products.concat([{ name: items.name, quantity: items.quantity }]),
           message: "This is my updated Item",
           direction: "outgoing",
           role: "user",
@@ -145,7 +147,7 @@ useEffect(() => {
         },
       ])
    
-    setItem({ name: "", qk: "1" });
+    setItem({ name: "", quantity: "1" });
     }
     
   }
@@ -180,63 +182,38 @@ useEffect(() => {
   
 
     //this code here use the image recognization component then executes codes just like axios process
-     OpenAIImage({ image: event.target.files[0] }).then(( result:any)=>{
-        let items:any = []
-        let name=""
-        let qk=""
+    OpenAIImage({ image: event.target.files[0] }).then((results:any[]) => {
+      console.log("Scan Result:");
+      console.table(results);
 
-        if (result == "No Food found!") {
-          toast({
-          title: "Done analyzing!",
-          description:
-            "No Food found!",
-        })
-        }else{
-         
-          JSON.parse(result)[0].food_indentified.map((e:any)=>(
-            name= e.name,
-            qk =e.quantity,
-            items = [...items,`${qk} ${e.name} `]
-            
-          ))
+      setMessages([
+        ...messages,
+        {
+          products: [...messages[messages.length - 1].products],
+          message: `Could you please identify the food items in this image?`,
+          direction: "outgoing",
+          role: "user",
+          image: URL.createObjectURL(event.target.files[0]),
+        },
+        {
+          products: [...messages[messages.length - 1].products,...results ],
+          message: `🕸️Hello, Dear Done Scanning your items. ITSY weep`,
+          direction: "outgoing",
+          role: "assistant",
+          image: "",
+        },
+        {
+          products: [...messages[messages.length - 1].products,...results],
+          message: `Could you please identify the food items in this image?`,
+          direction: "outgoing",
+          role: "user",
+          image: "",
+        },
         
-          
-          toast({
-            title: "Done analyzing!",
-            description:
-              "I’ve taken a peek at your image and found the following adorable yummy dummy item(s)",
-          })
-        }
-      
-       
-        setMessages([
-          ...messages,
-          {
-            products: [...messages[messages.length - 1].products],
-            message: `Identify food items on this image`,
-            direction: "outgoing",
-            role: "user",
-            image: URL.createObjectURL(event.target.files[0]),
-          },
-          {
-            products: [...messages[messages.length - 1].products],
-            message: result == "No Food found!"? `🕸️Hello, dear! I’m sorry, but I couldn’t find any food in the image you provided.` : `🕸️Hello, dear! I’ve taken a peek at your image and found the following adorable yummy dummy item(s):\n\n ${items.join('\n')}` ,
-            direction: "outgoing",
-            role: "assistant",
-            image: "",
-          },
-          {
-            products: messages[messages.length - 1].products.concat([{ itemName: name, itemQK: qk }]),
-            message: "This is my updated Item",
-            direction: "outgoing",
-            role: "user",
-            image: "",
-          },
-        ])
-     
-        
-        
-      })
+      ])
+
+    });
+
   }
 
 
@@ -351,7 +328,13 @@ const handleKeyDown = (event: any) => {
           }
         >
           <div id="uploading-image-layer-1" className=" w-[95%] h-[95%] rounded-md flex flex-col box-border  absolute z-100 pointer-events-none ">
+            
+          
+            
+            
             <div className=" h-full w-full  gap-5   flex items-end justify-end  ">
+            
+            
               <label
                 htmlFor="file-upload"
                 className=" animate__animated animate__fadeInUp animate__delay-2s  border-[1px] border-border flex items-center justify-center  px-3 py-2 w-30 cursor-pointer text-accent-foreground m-7 bg-background/20 backdrop-blur-sm rounded-md text-sm hover:bg-accent  z-20 pointer-events-auto "
@@ -366,6 +349,17 @@ const handleKeyDown = (event: any) => {
               
                 onChange={uploadImage}
               />
+              <div className=" z-20 pointer-events-auto flex gap-3 absolute top-0 p-5 ">
+              <Switch
+             
+             checked={isChecked}
+              onCheckedChange={(e)=>{
+                setIsChecked(e)
+                localStorage.setItem('mode-4',`${e}`)
+                console.log("mode-4:", e)
+              }} />
+              <p className=" text-primary">GPT-4</p>
+            </div>
             </div>
             <div className=" sm:pt-7 flex w-full h-[200px] pt-8 flex-col  justify-between  "></div>
           </div>
@@ -425,6 +419,8 @@ const handleKeyDown = (event: any) => {
                     id="input-container"
                     className="  flex gap-4 w-full max-w-[1020px]"
                   >
+
+                    
                     <Input
                       type="text"
                       placeholder="Name"
@@ -436,8 +432,8 @@ const handleKeyDown = (event: any) => {
                     <Input
                       type="text"
                       placeholder="Quantity/Weight"
-                      value={items.qk}
-                      name="qk"
+                      value={items.quantity}
+                      name="quantity"
                       onChange={onChangeInput}
                       onKeyDown={handleKeyDown}
                     />
@@ -527,7 +523,7 @@ const handleKeyDown = (event: any) => {
                     let product: any = [];
                     messages[messages.length - 1].products.map(
                       (e: any) =>
-                        (product = [...product, `${e.itemQK} ${e.itemName}`])
+                        (product = [...product, `${e.quantity} ${e.name}`])
                     );
 
                     console.log(product.join(" "));
