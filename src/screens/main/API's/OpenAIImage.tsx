@@ -6,8 +6,6 @@ import CryptoJS from "crypto-js"
 async function OpenAIImage({image}:any ) {
   const decryptText = (encryptedText: string): string => {
     const bytes = CryptoJS.AES.decrypt(encryptedText, "itsy");
-
-    console.log(bytes.toString(CryptoJS.enc.Utf8))
     return bytes.toString(CryptoJS.enc.Utf8);
   };
 
