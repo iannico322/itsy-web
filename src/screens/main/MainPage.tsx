@@ -159,7 +159,7 @@ useEffect(() => {
     toast({
       title: "Analyzing Image...",
       description:
-        "wait up negga im analyzing your image...!",
+        "Please hold on, I’m analyzing your image…...!",
     });
 
       setMessages([
@@ -173,7 +173,7 @@ useEffect(() => {
         },
         {
           products: [...messages[messages.length - 1].products],
-          message: `🕸️Hello, dear! Im about to scan your image, please wait for a while`,
+          message: `🕸️Hello, dear! Im about to scan your image, please wait for a while...`,
           direction: "outgoing",
           role: "assistant",
           image: "",
@@ -186,6 +186,30 @@ useEffect(() => {
       console.log("Scan Result:");
       console.table(results);
 
+
+      results[0].warning?
+    
+        setMessages([
+          ...messages,
+          {
+            products: [...messages[messages.length - 1].products],
+            message: `Could you please identify the food items in this image?`,
+            direction: "outgoing",
+            role: "user",
+            image: URL.createObjectURL(event.target.files[0]),
+          },
+          {
+            products: [...messages[messages.length - 1].products],
+            message: `🕸️Hello, I’ve finished scanning your items. Unfortunately, no food items were detected. Thank you for your patience`,
+            direction: "outgoing",
+            role: "assistant",
+            image: "",
+          }
+        ]) 
+
+        
+      : 
+      
       setMessages([
         ...messages,
         {
@@ -197,7 +221,7 @@ useEffect(() => {
         },
         {
           products: [...messages[messages.length - 1].products,...results ],
-          message: `🕸️Hello, Dear Done Scanning your items. ITSY weep`,
+          message: `🕸️Hello, I’ve finished scanning your items. Thank you for your patience`,
           direction: "outgoing",
           role: "assistant",
           image: "",
@@ -212,6 +236,14 @@ useEffect(() => {
         
       ])
 
+      toast({
+        title: "Done",
+        description:
+          "Hello, I’ve finished scanning your items!",
+      });
+    
+    
+    
     });
 
   }
@@ -346,7 +378,7 @@ const handleKeyDown = (event: any) => {
                 id="file-upload"
                 type="file"
                 className="hidden "
-              
+                accept=".jpg,.jpeg,.png"
                 onChange={uploadImage}
               />
               <div className=" z-20 pointer-events-auto flex gap-3 absolute top-0 p-5 ">
