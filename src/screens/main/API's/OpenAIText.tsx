@@ -17,26 +17,33 @@ async function OpenAIText({ product }: any) {
   Preferences: [${localStorage.getItem("SelectedPrefence")}]
   Language [${localStorage.getItem("Languange")}]
   
-  Output:
-  [
-    {
-      "name": "dish name1",
-      "ingredients": ["ingredient1", "ingredient2"],
-      "cooking_steps": ["1. step1", "2. step2"],
-      "serves": "number of people"
-    },
-    {
-      "name": "dish name2",
-      "ingredients": ["ingredient1", "ingredient2"],
-      "cooking_steps": ["1. step1", "2. step2"],
-      "serves": "number of people"
-    }
-  ]`;
+  The output should be in the following format:
+  {
+    "result":
+      [
+      {
+        "name": "dish name1",
+        "ingredients": ["ingredient1", "ingredient2"],
+        "cooking_steps": ["1. step1", "2. step2"],
+        "serves": "number of people"
+      },
+      {
+        "name": "dish name2",
+        "ingredients": ["ingredient1", "ingredient2"],
+        "cooking_steps": ["1. step1", "2. step2"],
+        "serves": "number of people"
+      }
+    ]
+   }
+  
+  
+  `;
 
   const apiMessages = { role: "user", content: bodyPrompt };
 
   const apiRequestBody = {
-    model: localStorage.getItem("mode-4") == "false"?"gpt-3.5-turbo":"gpt-4-1106-preview",
+    model: localStorage.getItem("mode-4") == "false"?"gpt-3.5-turbo-1106":"gpt-4-1106-preview",
+    response_format: { type: "json_object" },
     messages: [
       {
         role: "system",
@@ -50,29 +57,32 @@ async function OpenAIText({ product }: any) {
             Products: [chicken, pieces dried bay leave, soy sauce, white vinegar, cloves garlic, water, cooking oil, sugar, salt, peppercorn] Preferences: [Filipino Style] Language: [English]
             
             The output should be in the following format:
-            
-            Output:
-            [
-              {
-                "name": "dish name1",
-                "ingredients": ["ingredient1", "ingredient2"],
-                "cooking_steps": ["1. step1", "2. step2"],
-                "serves": "number of people"
-              },
-              {
-                "name": "dish name2",
-                "ingredients": ["ingredient1", "ingredient2"],
-                "cooking_steps": ["1. step1", "2. step2"],
-                "serves": "number of people"
-              }
-            ]
+            {
+              "result":
+                [
+                {
+                  "name": "dish name1",
+                  "ingredients": ["ingredient1", "ingredient2"],
+                  "cooking_steps": ["1. step1", "2. step2"],
+                  "serves": "number of people"
+                },
+                {
+                  "name": "dish name2",
+                  "ingredients": ["ingredient1", "ingredient2"],
+                  "cooking_steps": ["1. step1", "2. step2"],
+                  "serves": "number of people"
+                }
+              ]
+             }
     
         
             `,
       },
       {
         role: "assistant",
-        content: `[
+        content: `{
+          "result":
+          [
               {
                   "name": "Chicken Adob",
                   "ingredients": 
@@ -81,7 +91,7 @@ async function OpenAIText({ product }: any) {
                   "serves":"6 people"
               }
               
-          ]
+          ]}
             `,
       },
       {
@@ -95,7 +105,7 @@ async function OpenAIText({ product }: any) {
         The output should be in the following format:
         
         Output:
-        [
+        {"result":[
           {
             "name": "dish name1",
             "ingredients": ["ingredient1", "ingredient2"],
@@ -108,13 +118,13 @@ async function OpenAIText({ product }: any) {
             "cooking_steps": ["1. step1", "2. step2"],
             "serves": "number of people"
           }
-        ]
+        ]}
         
             `,
       },
       {
         role: "assistant",
-        content: `[
+        content: `{"result":[
             {
                 "name": "Chicken Adob",
                 "ingredients": ["2 lbs nga manok", "3 ka piraso nga uga nga dahon sa bay","6 ka kutsarang toyo","4 ka kutsarang puti nga suka","5 ka cloves nga ahos", "1 1/2 ka tasang tubig","3 kutsara nga mantika sa pagluto ","1 ka kutsarita nga asukar", "1/4 ka kutsarita nga asin", "1 ka kutsarita nga tibuok peppercorn"],
@@ -122,7 +132,7 @@ async function OpenAIText({ product }: any) {
                 "serves":"6 ka tao"
             }
             
-        ]
+        ]}
           `,
       },
       {
@@ -136,27 +146,29 @@ async function OpenAIText({ product }: any) {
         The output should be in the following format:
         
         Output:
-        [
-          {
-            "name": "dish name1",
-            "ingredients": ["ingredient1", "ingredient2"],
-            "cooking_steps": ["1. step1", "2. step2"],
-            "serves": "number of people"
-          },
-          {
-            "name": "dish name2",
-            "ingredients": ["ingredient1", "ingredient2"],
-            "cooking_steps": ["1. step1", "2. step2"],
-            "serves": "number of people"
-          }
-        ]
+        { "result":[
+                  {
+                    "name": "dish name1",
+                    "ingredients": ["ingredient1", "ingredient2"],
+                    "cooking_steps": ["1. step1", "2. step2"],
+                    "serves": "number of people"
+                  },
+                  {
+                    "name": "dish name2",
+                    "ingredients": ["ingredient1", "ingredient2"],
+                    "cooking_steps": ["1. step1", "2. step2"],
+                    "serves": "number of people"
+                  }
+                ]
+        }
   
       
           `,
       },
       {
         role: "assistant",
-        content: `[
+        content: `{"result":[
+          
           {
               "name": "Chicken Adobo >_<",
               "ingredients": ["2 lbs chicken", "3 pieces dried bay leaves","6 tablespoons soy sauce","4 tablespoons white vinega","5 cloves garlic","1 1/2 cups water","3 tablespoons cooking oil","1 teaspoon sugar","1/4 teaspoon salt","1 teaspoon whole peppercorn"],
@@ -172,7 +184,7 @@ async function OpenAIText({ product }: any) {
                 "serves":"6 people"
           },
           
-      ]
+      ]}
         `,
       },
       apiMessages,
@@ -198,7 +210,9 @@ async function OpenAIText({ product }: any) {
         },
       }
     );
-    return JSON.parse((await response).data.choices[0].message.content);
+
+
+    return JSON.parse((await response).data.choices[0].message.content).result;
   } catch (e) {
     return [];
   }
