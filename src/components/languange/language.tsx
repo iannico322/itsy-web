@@ -89,6 +89,7 @@ export function Language () {
                           key={language.value}
                           onSelect={() => {
                             localStorage.setItem("Languange",language.value)
+                            
 
                             toast({
                               title: "Language Swap!",

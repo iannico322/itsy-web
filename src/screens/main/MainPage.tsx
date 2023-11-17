@@ -116,7 +116,7 @@ useEffect(() => {
           Please wait while I’m searching for your menus…`,
           direction: "outgoing",
           role: "assistant",
-          image: "",
+          image: "loading",
         },
       ])
    
@@ -173,10 +173,10 @@ useEffect(() => {
         },
         {
           products: [...messages[messages.length - 1].products],
-          message: `🕸️Hello, dear! Im about to scan your image, please wait for a while...`,
+          message: `🕸️Greetings! I’m currently processing your image. Please hold on for a moment…`,
           direction: "outgoing",
           role: "assistant",
-          image: "",
+          image: "loading",
         },
       ])
   
