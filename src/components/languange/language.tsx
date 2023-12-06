@@ -65,7 +65,7 @@ export function Language () {
                       variant="outline"
                       role="combobox"
                       className={cn(
-                        "w-[200px] justify-between text-accent-foreground sm:w-[120px] sm:text-xs px-2",
+                        "w-[200px] justify-between text-accent-foreground sm:w-[90px] sm:text-xs px-2",
                         !field.value && "text-muted-foreground"
                       )}
                     >

@@ -29,6 +29,7 @@ import OpenAIImage from "./API's/OpenAIImage";
 import SelectedPage from "./SelectedPage";
 import MenuLoader from "@/components/loader/menuLoader";
 import { Switch } from "@/components/ui/switch";
+import SinSupFo from "./SinSupFo";
 
 const MainPage = () => {
   type MessageType = {
@@ -62,6 +63,7 @@ const MainPage = () => {
 
 
   const [viewMenu,SetViewMenu] = useState(false)
+  const [viewAccount,SetviewAccount] = useState(false)
 
   const [loading,SetLoading]= useState(false)
   const [isChecked, setIsChecked] = useState(localStorage.getItem('mode-4') === 'true');
@@ -270,6 +272,17 @@ const handleKeyDown = (event: any) => {
 
   return (
     <div className=" flex flex-col  w-screen h-screen overflow-hidden  bg-background box-border ">
+      <div className={viewAccount?"   overflow-hidden flex w-screen h-screen absolute z-50 bg-black/70  items-center justify-center ":"hidden"}>
+       
+        <SinSupFo 
+        
+        viewopt={
+          ()=>{
+          SetviewAccount(false)
+          }}
+        />
+      </div>
+
       {/* This is toaster in a simple words a pop up warning modal */}
       <div className="  w-full h-full absolute bottom-0 z-20 pointer-events-none overflow-hidden">
         <Toaster />
@@ -278,23 +291,32 @@ const handleKeyDown = (event: any) => {
 
       {/* Naa dri ang navigation bar */}
       <nav className=" flex justify-between items-center w-full py-5 box-border px-6  ">
-        <Link className=" w-[20%] sm:w-[50%]" to="/itsy-web">
+        <Link className=" w-[20%] min-w-[100px] " to="/itsy-web">
           <img
-            className="object-contain h-12 m-0 sm:h-10  "
+            className="object-contain h-12 m-0 sm:h-8  "
             src={Logo}
             alt="ITSY logo"
           />
         </Link>
 
-        <div className="flex gap-3 w-[30%] sm:w-[50%] sm:gap-1 justify-end items-center">
+        <div className="flex gap-3 w-[50%]  md:w-[75%] sm:gap-1 justify-end items-center">
+          <Button
+            variant="default"
+            className="px-5 sm:w-full flex sm:text-xs   "
+            onClick={()=>{
+              SetviewAccount(true)
+            }}
+          >
+            Use My Account
+          </Button>
           <Language />
-          <ModeToggle />
+          <ModeToggle  />
         </div>
       </nav>
       {/* Naa dri ang navigation bar */}
 
       {/* Mobile Navigation only shows when screen is sm */}
-      <div className=" hidden sm:flex w-full h-10 items-center z-50   gap-3 justify-center text-accent-foreground/80 text-xs ">
+      <div className=" hidden sm:flex w-full h-10 items-center z-30   gap-3 justify-center text-accent-foreground/80 text-xs ">
         <p
           className=" flex gap-2 items-center hover:text-[#3dd44b] hover:cursor-pointer  "
           onClick={() => {

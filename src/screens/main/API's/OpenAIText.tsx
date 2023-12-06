@@ -34,10 +34,7 @@ async function OpenAIText({ product }: any) {
         "serves": "number of people"
       }
     ]
-   }
-  
-  
-  `;
+   }`;
 
   const apiMessages = { role: "user", content: bodyPrompt };
 
