@@ -17,7 +17,7 @@ import { UploadIcon } from "@radix-ui/react-icons";
 
 
 
-import { useEffect,useMemo,useState } from "react";
+import { useEffect,useState } from "react";
 
 
 import EmtScreen from "./EmtScreen";
