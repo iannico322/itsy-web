@@ -3,10 +3,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Cross1Icon,ReloadIcon } from "@radix-ui/react-icons";
 import { useEffect, useState } from "react";
-import axios from './../../plugins/axios'
+import axios from '../../plugins/axios'
 import AlertBox from "@/components/alert/alert";
+import { useNavigate } from "react-router-dom";
+
 
 const SinSupFo = ({ viewopt }: any) => {
+  const navigate = useNavigate()
   const [user, setUser] = useState({
     email: "",
     password: "",
@@ -97,10 +100,12 @@ const SinSupFo = ({ viewopt }: any) => {
             message: `You have successfully logged in. Welcome back ${res.data.first_name} !`
           })
 
+
           setUser({
             email: "",
             password: "",
           })
+          navigate('/itsy-web/main')
       })
 
 

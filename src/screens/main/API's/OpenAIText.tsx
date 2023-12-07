@@ -200,15 +200,14 @@ async function OpenAIText({ product }: any) {
         cancelToken: source.token,
         headers: {
           Authorization: `Bearer ${decryptText(
-            localStorage.getItem("mode-4") == "false"? localStorage.getItem("none") || "": localStorage.getItem("none2") || ""
-            
+             localStorage.getItem("none2") || ""
           )}`,
           "Content-Type": "application/json",
         },
       }
     );
 
-
+    localStorage.setItem("count", JSON.parse(localStorage.getItem("count")||"") +1)  
     return JSON.parse((await response).data.choices[0].message.content).result;
   } catch (e) {
     return [];

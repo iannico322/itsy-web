@@ -1,4 +1,3 @@
-import { Link, useNavigate } from "react-router-dom";
 import Logo from "./../../images/Itsy_logo_w_text.png";
 import { Language } from "@/components/languange/language";
 import { ModeToggle } from "@/components/mode-toggle";
@@ -18,7 +17,7 @@ import { UploadIcon } from "@radix-ui/react-icons";
 
 
 
-import { useEffect,useState } from "react";
+import { useEffect,useMemo,useState } from "react";
 
 
 import EmtScreen from "./EmtScreen";
@@ -29,15 +28,92 @@ import OpenAIImage from "./API's/OpenAIImage";
 import SelectedPage from "./SelectedPage";
 import MenuLoader from "@/components/loader/menuLoader";
 import { Switch } from "@/components/ui/switch";
-import SinSupFo from "../authentication/SinSupFo";
+import { Nav } from "@/components/nav/nav";
+import { useNavigate } from "react-router-dom";
+import axios from './../../plugins/axios';
 
-const MainPageAcc = () => {
+
+
+const MainPage = () => {
   const navigate = useNavigate()
-  useEffect(()=>{
-    if (localStorage.getItem("key")!="0"||localStorage.getItem("user")!="0") {
-      navigate("/itsy-web/main")
+
+  const [messages, setMessages] = useState<MessageType[]>(
+    JSON.parse(localStorage.getItem("messages2") || "")
+  );
+
+    async function GetMessageStart() {
+
+     await axios.get(`message/user/${JSON.parse(localStorage.getItem('user')||"").id}`,
+      {
+      headers: {
+        Authorization: `Token ${localStorage.getItem("key")}`,
+      }, 
+    }).then( async (res)=>{
+      if (res.data.length ==0) {
+         await axios.post(`message/all/`,
+              {
+
+                "userID": JSON.parse(localStorage.getItem('user')||"").id,
+                "messageContent": JSON.stringify(messages)
+              }
+            ,{
+              headers: {
+                Authorization: `Token ${localStorage.getItem("key")}`,
+              }, 
+            }).then((ress)=>{
+              localStorage.setItem("mID",ress.data.messageID)
+              setMessages(
+                JSON.parse(localStorage.getItem("messages2") || "")
+              );
+            })
+      }else{
+         await axios.get(`message/user/${JSON.parse(localStorage.getItem('user')||"").id}`
+            ,{
+              headers: {
+                Authorization: `Token ${localStorage.getItem("key")}`,
+              }, 
+            }).then((ress)=>{      
+              // console.log(ress.data[0].messageContent)
+              setMessages(JSON.parse(ress.data[0].messageContent))
+            })
+      }
+
+    })
+    
+  }  
+
+
+
+  async function PostMessage(message:any) {
+
+    axios.post(`message/all/`,
+      {
+        "userID": JSON.parse(localStorage.getItem('user')||"").id,
+        "messageContent": JSON.stringify(message)
+      }
+
+    ,{
+      headers: {
+        Authorization: `Token ${localStorage.getItem("key")}`,
+      }, 
+    }).then((res)=>{
+      console.log(res.data)
+    })
+    
+  }
+
+  useEffect(() => {
+    if (localStorage.getItem("key") === "0" || localStorage.getItem("user") === "0") {
+        navigate("/itsy-web/");
     }
-  },[])
+    GetMessageStart();
+    console.log("hhehehe")
+    // PostMessageStart(JSON.stringify(messages));
+}, [])
+
+
+
+  
   type MessageType = {
     role: string;
     products: any;
@@ -53,9 +129,7 @@ const MainPageAcc = () => {
   
   };
 
-  const [messages, setMessages] = useState<MessageType[]>(
-    JSON.parse(localStorage.getItem("messages") || "")
-  );
+ 
 
   const [items, setItem]: any = useState({ name: "", quantity: "" });
   const [pageAtChat, setpageAtChat] = useState(true);
@@ -69,20 +143,18 @@ const MainPageAcc = () => {
 
 
   const [viewMenu,SetViewMenu] = useState(false)
-  const [viewAccount,SetviewAccount] = useState(false)
-
   const [loading,SetLoading]= useState(false)
   const [isChecked, setIsChecked] = useState(localStorage.getItem('mode-4') === 'true');
 
 
 //this auto save the messages of the users
+
+
 useEffect(() => {
   const element: any = document.querySelector("#bottom-scroll");
   element.scrollIntoView(false);
-  console.log(messages);
-  localStorage.setItem("messages", JSON.stringify(messages));
+  
 }, [messages]);
-
 
 //this auto save the menus of the users
 useEffect(() => {
@@ -111,6 +183,14 @@ useEffect(() => {
       role: "user",
       image: "",
     }]);
+
+    PostMessage([...messages, {
+      products: newProducts,
+      message: "This is my updated Item",
+      direction: "outgoing",
+      role: "user",
+      image: "",
+    }])
   }
 
   function replyChatBeforeRES() {
@@ -119,7 +199,20 @@ useEffect(() => {
         ...messages,
         {
           products: [...messages[messages.length - 1].products],
-          message: `🕸️Hello, dear! Like a diligent spider 🕷️, I’m spinning your menus. Your patience is as precious as dew on a web. I’m fetching your menus! 🌼
+          message: `Hello, dear! Like a diligent spider , I’m spinning your menus. Your patience is as precious as dew on a web. I’m fetching your menus! 
+
+          Please wait while I’m searching for your menus…`,
+          direction: "outgoing",
+          role: "assistant",
+          image: "loading",
+        },
+      ])
+
+      PostMessage([
+        ...messages,
+        {
+          products: [...messages[messages.length - 1].products],
+          message: `Hello, dear! Like a diligent spider , I’m spinning your menus. Your patience is as precious as dew on a web. I’m fetching your menus! 
 
           Please wait while I’m searching for your menus…`,
           direction: "outgoing",
@@ -145,6 +238,17 @@ useEffect(() => {
     }else{
      console.log({ name: items.name, quantity: items.quantity })
       setMessages([
+        ...messages,
+        {
+          products: messages[messages.length - 1].products.concat([{ name: items.name, quantity: items.quantity }]),
+          message: "This is my updated Item",
+          direction: "outgoing",
+          role: "user",
+          image: "",
+        },
+      ])
+
+      PostMessage([
         ...messages,
         {
           products: messages[messages.length - 1].products.concat([{ name: items.name, quantity: items.quantity }]),
@@ -181,12 +285,32 @@ useEffect(() => {
         },
         {
           products: [...messages[messages.length - 1].products],
-          message: `🕸️Greetings! I’m currently processing your image. Please hold on for a moment…`,
+          message: `Greetings! I’m currently processing your image. Please hold on for a moment…`,
           direction: "outgoing",
           role: "assistant",
           image: "loading",
         },
       ])
+
+      PostMessage([
+        ...messages,
+        {
+          products: [...messages[messages.length - 1].products],
+          message: `Could you please identify the food items in this image?`,
+          direction: "outgoing",
+          role: "user",
+          image: URL.createObjectURL(event.target.files[0]),
+        },
+        {
+          products: [...messages[messages.length - 1].products],
+          message: `Greetings! I’m currently processing your image. Please hold on for a moment…`,
+          direction: "outgoing",
+          role: "assistant",
+          image: "loading",
+        },
+      ])
+
+
   
 
     //this code here use the image recognization component then executes codes just like axios process
@@ -195,7 +319,7 @@ useEffect(() => {
       console.table(results);
 
 
-      results[0].warning?
+      if(results[0].warning){
     
         setMessages([
           ...messages,
@@ -208,16 +332,33 @@ useEffect(() => {
           },
           {
             products: [...messages[messages.length - 1].products],
-            message: `🕸️Hello, I’ve finished scanning your items. Unfortunately, no food items were detected. Thank you for your patience`,
+            message: `Hello, I’ve finished scanning your items. Unfortunately, no food items were detected. Thank you for your patience`,
+            direction: "outgoing",
+            role: "assistant",
+            image: "",
+          }
+        ]),
+
+        PostMessage([
+          ...messages,
+          {
+            products: [...messages[messages.length - 1].products],
+            message: `Could you please identify the food items in this image?`,
+            direction: "outgoing",
+            role: "user",
+            image: URL.createObjectURL(event.target.files[0]),
+          },
+          {
+            products: [...messages[messages.length - 1].products],
+            message: `Hello, I’ve finished scanning your items. Unfortunately, no food items were detected. Thank you for your patience`,
             direction: "outgoing",
             role: "assistant",
             image: "",
           }
         ]) 
 
-        
-      : 
-      
+     }{
+
       setMessages([
         ...messages,
         {
@@ -229,7 +370,32 @@ useEffect(() => {
         },
         {
           products: [...messages[messages.length - 1].products,...results ],
-          message: `🕸️Hello, I’ve finished scanning your items. Thank you for your patience`,
+          message: `Hello, I’ve finished scanning your items. Thank you for your patience`,
+          direction: "outgoing",
+          role: "assistant",
+          image: "",
+        },
+        {
+          products: [...messages[messages.length - 1].products,...results],
+          message: `Could you please identify the food items in this image?`,
+          direction: "outgoing",
+          role: "user",
+          image: "",
+        },
+        
+      ])
+      PostMessage([
+        ...messages,
+        {
+          products: [...messages[messages.length - 1].products],
+          message: `Could you please identify the food items in this image?`,
+          direction: "outgoing",
+          role: "user",
+          image: URL.createObjectURL(event.target.files[0]),
+        },
+        {
+          products: [...messages[messages.length - 1].products,...results ],
+          message: `Hello, I’ve finished scanning your items. Thank you for your patience`,
           direction: "outgoing",
           role: "assistant",
           image: "",
@@ -244,11 +410,16 @@ useEffect(() => {
         
       ])
 
-      toast({
-        title: "Done",
-        description:
-          "Hello, I’ve finished scanning your items!",
-      });
+      
+     }
+     toast({
+      title: "Done",
+      description:
+        "Hello, I’ve finished scanning your items!",
+    });
+      
+      
+     
     
     
     
@@ -278,16 +449,9 @@ const handleKeyDown = (event: any) => {
 
   return (
     <div className=" flex flex-col  w-screen h-screen overflow-hidden  bg-background box-border ">
-      <div className={viewAccount?"   overflow-hidden flex w-screen h-screen absolute z-50 bg-black/70  items-center justify-center ":"hidden"}>
-       
-        <SinSupFo 
-        
-        viewopt={
-          ()=>{
-          SetviewAccount(false)
-          }}
-        />
-      </div>
+
+
+      
 
       {/* This is toaster in a simple words a pop up warning modal */}
       <div className="  w-full h-full absolute bottom-0 z-20 pointer-events-none overflow-hidden">
@@ -297,24 +461,31 @@ const handleKeyDown = (event: any) => {
 
       {/* Naa dri ang navigation bar */}
       <nav className=" flex justify-between items-center w-full py-5 box-border px-6  ">
-        <Link className=" w-[20%] min-w-[100px] " to="/itsy-web">
+  
+        <div className=" flex gap-2 w-[20%] min-w-[100px] ">
           <img
             className="object-contain h-12 m-0 sm:h-8  "
             src={Logo}
             alt="ITSY logo"
           />
-        </Link>
+          <div className=" h-6 rounded-lg w-12  bg-[#3dd44b] flex items-center justify-center">
+            <p className="  text-xs text-accent">Plus</p>
+          </div>
+            
+
+        </div>
 
         <div className="flex gap-3 w-[50%]  md:w-[75%] sm:gap-1 justify-end items-center">
-          <Button
+          {/* <Button
             variant="default"
             className="px-5 sm:w-full flex sm:text-xs   "
             onClick={()=>{
-              SetviewAccount(true)
+           
             }}
           >
             Use My Account
-          </Button>
+          </Button> */}
+          <Nav/>
           <Language />
           <ModeToggle  />
         </div>
@@ -419,11 +590,6 @@ const handleKeyDown = (event: any) => {
                 console.log("mode-4:", e)
               }} />
               <p className=" text-primary">GPT-4</p>
-            </div>
-
-            <div className=" z-20 pointer-events-none flex gap-3 left-0 absolute top-0 p-5 ">
-              
-              <p className="  text-accent-foreground ">Usage: <span className=" text-primary text-2xl">{localStorage.getItem('count')}</span>/10</p>
             </div>
             </div>
             <div className=" sm:pt-7 flex w-full h-[200px] pt-8 flex-col  justify-between  "></div>
@@ -545,11 +711,12 @@ const handleKeyDown = (event: any) => {
                       )
                     ) {
                       localStorage.setItem(
-                        "messages",
+                        "messages2",
                         '[{ "role": "itsy", "products": [],"message":"Hey dear, I\'m ITSY your culinary spider buddy! share your items, and I\'ll weave dishes so snappy!", "direction":"","image":"" }]'
                       );
+                      PostMessage(JSON.parse(localStorage.getItem("messages2") || ""))
                       setMessages(
-                        JSON.parse(localStorage.getItem("messages") || "")
+                        JSON.parse(localStorage.getItem("messages2") || "")
                       );
 
                       localStorage.setItem("menus", "[]");
@@ -609,7 +776,7 @@ const handleKeyDown = (event: any) => {
                           });
                           SetLoading(false);
 
-                          messages.map((e: any) =>
+                          messages.map((e: any) =>{
                             setMessages([
                               ...messages,
                               {
@@ -620,7 +787,17 @@ const handleKeyDown = (event: any) => {
                                 image: "",
                               },
                             ])
-                          );
+                            PostMessage([
+                              ...messages,
+                              {
+                                products: [...e.products],
+                                message: `Your request for cancellation of menu has been successfully implemented!`,
+                                direction: "outgoing",
+                                role: "assistant",
+                                image: "",
+                              },
+                            ])
+                          });
                         } else {
                           SetLoading(false);
                           setMenus(result);
@@ -639,12 +816,12 @@ const handleKeyDown = (event: any) => {
                               ];
                             });
 
-                            messages.map((e: any) =>
+                            messages.map((e: any) =>{
                               setMessages([
                                 ...messages,
                                 {
                                   products: [...e.products],
-                                  message: `🕸️Hello, dear! Like a diligent spider 🕷️, your menus are spun. Thanks for your patience, as precious as dew on a web. Enjoy your menus!
+                                  message: `Hello, dear! Like a diligent spider , your menus are spun. Thanks for your patience, as precious as dew on a web. Enjoy your menus!
             
                                   Here are your menus:
                                   ${menus_name.join(" \n")} \n`,
@@ -653,7 +830,20 @@ const handleKeyDown = (event: any) => {
                                   image: "",
                                 },
                               ])
-                            );
+                              PostMessage([
+                                ...messages,
+                                {
+                                  products: [...e.products],
+                                  message: `Hello, dear! Like a diligent spider , your menus are spun. Thanks for your patience, as precious as dew on a web. Enjoy your menus!
+            
+                                  Here are your menus:
+                                  ${menus_name.join(" \n")} \n`,
+                                  direction: "outgoing",
+                                  role: "assistant",
+                                  image: "",
+                                },
+                              ])
+                            });
                           }
                         }
                       })
@@ -733,4 +923,4 @@ const handleKeyDown = (event: any) => {
   );
 };
 
-export default MainPageAcc;
+export default MainPage;

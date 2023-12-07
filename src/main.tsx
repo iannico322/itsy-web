@@ -10,9 +10,16 @@ import { ThemeProvider } from "@/components/theme-provider"
 const App= lazy(() =>
   wait(2000).then(() => import("./App.tsx"))
 );
+const Activation= lazy(() =>
+  wait(2000).then(() => import("./screens/authentication/activation.tsx"))
+);
 
 const MainPage= lazy(() =>
   wait(1300).then(() => import("./screens/main/MainPage.tsx"))
+);
+
+const MainPageAcc= lazy(() =>
+  wait(1300).then(() => import("./screens/main/MainPageAcc.tsx"))
 );
 
 const NotFound= lazy(() =>
@@ -26,6 +33,22 @@ const router = createBrowserRouter([
     element:  <>
     <Suspense fallback={<Loader />}>
       <MainPage  />
+    </Suspense>
+  </>,
+  },
+  {
+    path: "/itsy-web/main",
+    element:  <>
+    <Suspense fallback={<Loader />}>
+      <MainPageAcc/>
+    </Suspense>
+  </>,
+  },
+  {
+    path: "/itsy-web/activation/:uid/:token",
+    element:  <>
+    <Suspense fallback={<Loader />}>
+      <Activation  />
     </Suspense>
   </>,
   },

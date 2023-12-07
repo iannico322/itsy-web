@@ -24,12 +24,14 @@ function App() {
   useEffect(()=>  {
 
    
-      localStorage.getItem('none')==null?localStorage.setItem('none','U2FsdGVkX18UQ2IN3040zHeBbni7vv1V3IxxQCKtFK8qVvVbd+1SZAApU5EQo2aptfrXD1Z4xfHRbYexqYJoIOSeBSA2gUymsQRoS6YvWcI='):""
-
+      // localStorage.getItem('none')==null?localStorage.setItem('none','U2FsdGVkX18UQ2IN3040zHeBbni7vv1V3IxxQCKtFK8qVvVbd+1SZAApU5EQo2aptfrXD1Z4xfHRbYexqYJoIOSeBSA2gUymsQRoS6YvWcI='):""
       localStorage.getItem('none2')==null?localStorage.setItem('none2','U2FsdGVkX19RVASTAa0UY10udMDNZXzZQZKuuz6bi/gNDotjwyyd9J25CrvWpYTYK9U2zZdgVyqmlv0V4++2hg8o3O+zlgswf1bPyL8EgrM='):""
+      localStorage.getItem('user')==null?localStorage.setItem('user','0'):""
+      localStorage.getItem('key')==null?localStorage.setItem('key','0'):""
+      localStorage.getItem('count')==null?localStorage.setItem('count','0'):""
 
 
-
+      localStorage.getItem('messages2')==null? localStorage.setItem('messages2','[{ "from": "itsy", "products": [],"message":"Hey dear, I\'m ITSY your culinary spider buddy! share your items, and I\'ll weave dishes so snappy!", "direction":"","image":"" }]'):""
       localStorage.getItem('messages')==null? localStorage.setItem('messages','[{ "from": "itsy", "products": [],"message":"Hey dear, I\'m ITSY your culinary spider buddy! share your items, and I\'ll weave dishes so snappy!", "direction":"","image":"" }]'):""
       localStorage.getItem('menus')==null? localStorage.setItem('menus','[]'):""
       localStorage.getItem("SelectedPrefence")==null?localStorage.setItem("SelectedPrefence", `["Simple"]`):""
