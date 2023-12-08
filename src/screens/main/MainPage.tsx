@@ -36,7 +36,7 @@ const MainPageAcc = () => {
   const [callCount, setCallCount] = useState<number>(0);
   useEffect(()=>{
     const currentDate = new Date().toDateString();
-    const storedDate = "localStorage.getItem('date');"
+    const storedDate = localStorage.getItem('date');
     const storedCount = localStorage.getItem('callCount');
 
     if (storedDate === null || storedDate !== currentDate) {

@@ -8,14 +8,10 @@ const Dialog = DialogPrimitive.Root
 
 const DialogTrigger = DialogPrimitive.Trigger
 
-interface ExtendedDialogPortalProps extends DialogPrimitive.DialogPortalProps {
-  className?: string;
-}
-
 const DialogPortal = ({
-  className,
+ 
   ...props
-}: ExtendedDialogPortalProps) => (
+}: DialogPrimitive.DialogPortalProps) => (
   <DialogPrimitive.Portal  {...props} />
 )
 DialogPortal.displayName = DialogPrimitive.Portal.displayName
