@@ -31,21 +31,12 @@ import MenuLoader from "@/components/loader/menuLoader";
 import { Switch } from "@/components/ui/switch";
 import SinSupFo from "../authentication/SinSupFo";
 
-import { RocketIcon } from "@radix-ui/react-icons"
- 
-import {
-  Alert,
-  AlertDescription,
-  AlertTitle,
-} from "@/components/ui/alert"
-
 const MainPageAcc = () => {
   const navigate = useNavigate()
   const [callCount, setCallCount] = useState<number>(0);
   useEffect(()=>{
-    
     const currentDate = new Date().toDateString();
-    const storedDate = localStorage.getItem('date');
+    const storedDate = "localStorage.getItem('date');"
     const storedCount = localStorage.getItem('callCount');
 
     if (storedDate === null || storedDate !== currentDate) {
