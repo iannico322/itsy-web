@@ -31,13 +31,51 @@ import MenuLoader from "@/components/loader/menuLoader";
 import { Switch } from "@/components/ui/switch";
 import SinSupFo from "../authentication/SinSupFo";
 
+import { RocketIcon } from "@radix-ui/react-icons"
+ 
+import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
+} from "@/components/ui/alert"
+
 const MainPageAcc = () => {
   const navigate = useNavigate()
+  const [callCount, setCallCount] = useState<number>(0);
   useEffect(()=>{
+    
+    const currentDate = new Date().toDateString();
+    const storedDate = localStorage.getItem('date');
+    const storedCount = localStorage.getItem('callCount');
+
+    if (storedDate === null || storedDate !== currentDate) {
+      localStorage.setItem('date', currentDate);
+      localStorage.setItem('callCount', '0');
+      setCallCount(0);
+    } else {
+      setCallCount(parseInt(storedCount || '0'));
+    }
     if (localStorage.getItem("key")!="0"||localStorage.getItem("user")!="0") {
       navigate("/itsy-web/main")
     }
   },[])
+
+  const limitedCallFunction = (num:any) => {
+    if (callCount < 10) {
+      // Your function logic goes here
+
+      const newCount = callCount + num;
+      localStorage.setItem('callCount', newCount.toString());
+      setCallCount(newCount);
+    } else {
+     
+      
+      
+      console.log('No more function available.');
+    }
+  };
+
+  
   type MessageType = {
     role: string;
     products: any;
@@ -162,8 +200,15 @@ useEffect(() => {
 
 
   const uploadImage= (event:any)=> {
-
-    //this code here run after uploading image
+    limitedCallFunction(0)
+    if (callCount > 9) {
+      toast({
+        title: "ITSY whoopsyyy!",
+        description: "You have reach your usage limit today, please comeback tommorow or register an account for unlimited usage.",
+      });
+      
+    }else{
+      //this code here run after uploading image
     toast({
       title: "Analyzing Image...",
       description:
@@ -187,8 +232,6 @@ useEffect(() => {
           image: "loading",
         },
       ])
-  
-
     //this code here use the image recognization component then executes codes just like axios process
     OpenAIImage({ image: event.target.files[0] }).then((results:any[]) => {
       console.log("Scan Result:");
@@ -249,10 +292,17 @@ useEffect(() => {
         description:
           "Hello, I’ve finished scanning your items!",
       });
+
+      limitedCallFunction(1)
     
     
     
     });
+
+
+    }
+
+    
 
   }
 
@@ -389,12 +439,7 @@ const handleKeyDown = (event: any) => {
         >
           <div id="uploading-image-layer-1" className=" w-[95%] h-[95%] rounded-md flex flex-col box-border  absolute z-100 pointer-events-none ">
             
-          
-            
-            
             <div className=" h-full w-full  gap-5   flex items-end justify-end  ">
-            
-            
               <label
                 htmlFor="file-upload"
                 className=" animate__animated animate__fadeInUp animate__delay-2s  border-[1px] border-border flex items-center justify-center  px-3 py-2 w-30 cursor-pointer text-accent-foreground m-7 bg-background/20 backdrop-blur-sm rounded-md text-sm hover:bg-accent  z-20 pointer-events-auto "
@@ -409,6 +454,8 @@ const handleKeyDown = (event: any) => {
                 accept=".jpg,.jpeg,.png"
                 onChange={uploadImage}
               />
+
+              
               <div className=" z-20 pointer-events-auto flex gap-3 absolute top-0 p-5 ">
               <Switch
              
@@ -423,7 +470,7 @@ const handleKeyDown = (event: any) => {
 
             <div className=" z-20 pointer-events-none flex gap-3 left-0 absolute top-0 p-5 ">
               
-              <p className="  text-accent-foreground ">Usage: <span className=" text-primary text-2xl">{localStorage.getItem('count')}</span>/10</p>
+              <p className="  text-accent-foreground ">Usage: <span className=" text-primary text-2xl">{localStorage.getItem('callCount')}</span>/10</p>
             </div>
             </div>
             <div className=" sm:pt-7 flex w-full h-[200px] pt-8 flex-col  justify-between  "></div>
@@ -580,6 +627,17 @@ const handleKeyDown = (event: any) => {
                   disabled={loading ? true : false}
                   className="px-10 w-full gap-2"
                   onClick={() => {
+
+                    limitedCallFunction(0)
+
+                    if (callCount > 9) {
+                      toast({
+                        title: "ITSY whoopsyyy!",
+                        description: "You have reach your usage limit today, please comeback tommorow or register an account for unlimited usage.",
+                      });
+                      
+                    }else{
+                      
                     toast({
                       title: "Loading... ",
                       description: "Please wait for i searching for your menus",
@@ -596,7 +654,10 @@ const handleKeyDown = (event: any) => {
                     replyChatBeforeRES();
 
                     SetLoading(true);
-                    OpenAIText({ product: `${product.join(",")}` })
+
+
+
+                      OpenAIText({ product: `${product.join(",")}` })
                       .then((result: any[]) => {
                         console.log("Menu API Response");
                         console.table(result);
@@ -654,6 +715,8 @@ const handleKeyDown = (event: any) => {
                                 },
                               ])
                             );
+
+                            limitedCallFunction(1)
                           }
                         }
                       })
@@ -661,6 +724,9 @@ const handleKeyDown = (event: any) => {
                         SetLoading(false);
                         console.log(error);
                       });
+
+                    }
+                    
                   }}
                 >
                   Generate Menus
