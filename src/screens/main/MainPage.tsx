@@ -443,7 +443,7 @@ const handleKeyDown = (event: any) => {
                     type="file"
                     className="hidden"
                     accept="image/*"
-                    capture="environment"
+                    // capture="environment"
                     onChange={uploadImage}
                 />
 

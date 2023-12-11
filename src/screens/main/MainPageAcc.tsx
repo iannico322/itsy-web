@@ -578,7 +578,7 @@ const handleKeyDown = (event: any) => {
                   type="file"
                   className="hidden"
                   accept="image/*"
-                  capture="environment"
+                  // capture="environment"
                   onChange={uploadImage}
               />
               <div className=" z-20 pointer-events-auto flex gap-3 absolute top-0 p-5 ">
