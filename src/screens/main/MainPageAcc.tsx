@@ -573,12 +573,13 @@ const handleKeyDown = (event: any) => {
                 <UploadIcon className="sm:mr-2 mr-2 h-4 w-4 " />
                 Upload
               </label>
-              <input
-                id="file-upload"
-                type="file"
-                className="hidden "
-                accept=".jpg,.jpeg,.png"
-                onChange={uploadImage}
+             <input
+                  id="file-upload"
+                  type="file"
+                  className="hidden"
+                  accept="image/*"
+                  capture="environment"
+                  onChange={uploadImage}
               />
               <div className=" z-20 pointer-events-auto flex gap-3 absolute top-0 p-5 ">
               <Switch
