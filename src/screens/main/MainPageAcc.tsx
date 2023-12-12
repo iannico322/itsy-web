@@ -774,28 +774,29 @@ const handleKeyDown = (event: any) => {
                           });
                           SetLoading(false);
 
-                          messages.map((e: any) =>{
+                         
                             setMessages([
                               ...messages,
                               {
-                                products: [...e.products],
+                                products: [...messages[messages.length - 1].products],
                                 message: `Your request for cancellation of menu has been successfully implemented!`,
                                 direction: "outgoing",
                                 role: "assistant",
                                 image: "",
                               },
                             ])
+                            
                             PostMessage([
                               ...messages,
                               {
-                                products: [...e.products],
+                                products: [...messages[messages.length - 1].products],
                                 message: `Your request for cancellation of menu has been successfully implemented!`,
                                 direction: "outgoing",
                                 role: "assistant",
                                 image: "",
                               },
                             ])
-                          });
+                        
                         } else {
                           SetLoading(false);
                           setMenus(result);
@@ -814,11 +815,11 @@ const handleKeyDown = (event: any) => {
                               ];
                             });
 
-                            messages.map((e: any) =>{
+                            
                               setMessages([
                                 ...messages,
                                 {
-                                  products: [...e.products],
+                                  products: [...messages[messages.length - 1].products],
                                   message: `Hello, dear! Like a diligent spider , your menus are spun. Thanks for your patience, as precious as dew on a web. Enjoy your menus!
             
                                   Here are your menus:
@@ -831,7 +832,7 @@ const handleKeyDown = (event: any) => {
                               PostMessage([
                                 ...messages,
                                 {
-                                  products: [...e.products],
+                                  products: [...messages[messages.length - 1].products],
                                   message: `Hello, dear! Like a diligent spider , your menus are spun. Thanks for your patience, as precious as dew on a web. Enjoy your menus!
             
                                   Here are your menus:
@@ -841,7 +842,7 @@ const handleKeyDown = (event: any) => {
                                   image: "",
                                 },
                               ])
-                            });
+                           
                           }
                         }
                       })
