@@ -129,8 +129,6 @@ const MainPage = () => {
   
   };
 
- 
-
   const [items, setItem]: any = useState({ name: "", quantity: "" });
   const [pageAtChat, setpageAtChat] = useState(true);
   const [menus,setMenus] = useState <MenuType[]> (JSON.parse(localStorage.getItem("menus") || ""));
