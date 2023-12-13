@@ -460,14 +460,14 @@ const handleKeyDown = (event: any) => {
       {/* Naa dri ang navigation bar */}
       <nav className=" flex justify-between items-center w-full py-5 box-border px-6  ">
   
-        <div className=" flex gap-2 w-[20%] min-w-[100px] ">
+        <div className=" flex gap-2 sm:gap-0 w-[20%] min-w-[100px] ">
           <img
-            className="object-contain h-12 m-0 sm:h-8  "
+            className="object-contain h-12 m-0 sm:h-7  "
             src={Logo}
             alt="ITSY logo"
           />
-          <div className=" h-6 rounded-lg w-12  bg-[#3dd44b] flex items-center justify-center">
-            <p className="  text-xs text-accent">Plus</p>
+          <div className=" h-6 sm:h-3 rounded-lg w-12 sm:w-7  bg-[#3dd44b] flex items-center justify-center">
+            <p className="  text-xs text-accent sm:text-[5px]">Plus</p>
           </div>
             
 

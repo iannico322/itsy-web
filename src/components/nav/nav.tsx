@@ -23,8 +23,8 @@ export function Nav() {
       <NavigationMenuList>
         <NavigationMenuItem >
           <NavigationMenuTrigger className=" bg-card text-accent-foreground ">{JSON.parse(localStorage.getItem("user")||"").first_name} </NavigationMenuTrigger>
-          <NavigationMenuContent className=" w-[300px] sm:w-[300px]  ">
-            <ul className="grid gap-3   p-4 lg:grid-cols-[.75fr_1fr]">
+          <NavigationMenuContent className=" w-[300px] sm:w-[230px]  ">
+            <ul className=" p-4 lg:grid-cols-[.75fr_2fr]">
               <li className="col-span-2 ">
                 <NavigationMenuLink asChild className=" flex flex-wrap">
                   <a
@@ -40,8 +40,9 @@ export function Nav() {
                     </p>
                   </a>
                 </NavigationMenuLink>
+                
               </li>
-              <ListItem className=" hover:text-red-700 cursor-pointer" onClick={()=>{
+              <ListItem className=" col-span-2  w-full hover:text-red-700 cursor-pointer" onClick={()=>{
                 navigate("/itsy-web/")
                 localStorage.setItem("user","0")
                 localStorage.setItem("key","0")
