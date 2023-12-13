@@ -41,9 +41,6 @@ export function Nav() {
                   </a>
                 </NavigationMenuLink>
               </li>
-              <ListItem className=" hover:text-green-400 cursor-pointer" title="Save Menus">
-                Itsy Saved Your menus here
-              </ListItem>
               <ListItem className=" hover:text-red-700 cursor-pointer" onClick={()=>{
                 navigate("/itsy-web/")
                 localStorage.setItem("user","0")

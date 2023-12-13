@@ -10,25 +10,8 @@ import { useNavigate } from "react-router-dom";
 
 const SinSupFo = ({ viewopt }: any) => {
   const navigate = useNavigate()
-  const [user, setUser] = useState({
-    email: "",
-    password: "",
-  });
+ 
 
-  const [userF, setUserF] = useState({
-    email: "",
-  });
-
-  const [userCreate, setUserCreate] = useState({
-    first_name:"",
-    last_name:"",
-    email: "",
-    password: "",
-    re_password: "",
-  });
-
-  const [passwordVal,setPasswordVal]=useState(false)
-  const [confirmpasswordVal,setConfirmPasswordVal]=useState(false)
 
   const [sinsupfo,setSinSupFo] = useState(0)  
 
@@ -67,7 +50,10 @@ const SinSupFo = ({ viewopt }: any) => {
 
 
 
-
+  const [user, setUser] = useState({
+    email: "",
+    password: "",
+  });
 
   async function SignIn(){
     setWarning({
@@ -137,7 +123,16 @@ const SinSupFo = ({ viewopt }: any) => {
   }
 
 
+  const [userCreate, setUserCreate] = useState({
+    first_name:"",
+    last_name:"",
+    email: "",
+    password: "",
+    re_password: "",
+  });
 
+  const [passwordVal,setPasswordVal]=useState(false)
+  const [confirmpasswordVal,setConfirmPasswordVal]=useState(false)
     //Password validation family
     const validatePassword = (password: string) => {
       // Password should be at least 5 characters long
@@ -224,7 +219,9 @@ const SinSupFo = ({ viewopt }: any) => {
     }
     
   }
-
+  const [userF, setUserF] = useState({
+    email: "",
+  });
   async function ForgotPassword(){
   
     setWarning({
