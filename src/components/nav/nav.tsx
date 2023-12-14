@@ -22,7 +22,7 @@ export function Nav() {
     <NavigationMenu className="  z-50 ">
       <NavigationMenuList>
         <NavigationMenuItem >
-          <NavigationMenuTrigger className=" bg-card text-accent-foreground ">{JSON.parse(localStorage.getItem("user")||"").first_name} </NavigationMenuTrigger>
+          <NavigationMenuTrigger className="  bg-card text-accent-foreground  ">{(JSON.parse(localStorage.getItem("user")||"").first_name).substring(0, 6) } </NavigationMenuTrigger>
           <NavigationMenuContent className=" w-[300px] sm:w-[230px]  ">
             <ul className=" p-4 lg:grid-cols-[.75fr_2fr]">
               <li className="col-span-2 ">

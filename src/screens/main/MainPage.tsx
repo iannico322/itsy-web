@@ -562,14 +562,20 @@ const handleKeyDown = (event: any) => {
           }
         >
           <div id="uploading-image-layer-1" className=" w-[95%] h-[95%] rounded-md flex flex-col box-border  absolute z-100 pointer-events-none ">
+          
             
-            <div className=" h-full w-full  gap-5   flex items-end justify-end  ">
+            <div className=" relative h-full w-full  gap-5   flex items-end justify-end  ">
+            <div className="  absolute  z-20 pointer-events-none flex gap-3  left-0 bottom-0 p-5 ">
+              
+              <p className=" animate__animated animate__fadeInLeft animate__delay-1s  text-accent-foreground sm:text-xs ">Usage: <span className=" text-primary text-xl">{localStorage.getItem('callCount')}</span>/10</p>
+            </div>
+
               <label
               id="upload"
                 htmlFor="file-upload"
-                className=" animate__animated animate__fadeInUp animate__delay-2s  border-[1px] border-border flex items-center justify-center  px-3 py-2 w-30 cursor-pointer text-accent-foreground m-7 bg-background/20 backdrop-blur-sm rounded-md text-sm hover:bg-accent  z-20 pointer-events-auto "
+                className=" animate__animated animate__fadeInUp animate__delay-2s  border-[1px] border-border flex items-center justify-center   px-3 py-2 w-30 cursor-pointer text-accent-foreground sm:m-3 m-7 bg-background/20 backdrop-blur-sm rounded-md text-sm hover:bg-accent  z-20 pointer-events-auto sm:text-xs "
               >
-                <UploadIcon className="sm:mr-2 mr-2 h-4 w-4 " />
+                <UploadIcon className="sm:mr-2 mr-2 sm:h-[14px] sm:w-[14px]  h-4 w-4 " />
                 Upload
               </label>
               <input
@@ -580,17 +586,17 @@ const handleKeyDown = (event: any) => {
                 onChange={uploadImage}
               />
 
-              <input
+              {/* <input
               id="file-upload"
               type="file"
               className="hidden"
               accept="image/*"
               capture="environment"
               onChange={uploadImage}
-              />
+              /> */}
 
               
-              <div className=" z-20 pointer-events-auto flex gap-3 absolute top-0 p-5 ">
+              <div className="  z-20 pointer-events-auto flex gap-3 items-center  absolute top-0 p-5 sm:p-2 ">
               <Switch
              
              checked={isChecked}
@@ -599,13 +605,10 @@ const handleKeyDown = (event: any) => {
                 localStorage.setItem('mode-4',`${e}`)
                 console.log("mode-4:", e)
               }} />
-              <p className=" text-primary">GPT-4</p>
+              <p className=" text-primary sm:text-sm text-center">GPT-4</p>
             </div>
 
-            <div className=" z-20 pointer-events-none flex gap-3 left-0 absolute top-0 p-5 ">
-              
-              <p className="  text-accent-foreground ">Usage: <span className=" text-primary text-2xl">{localStorage.getItem('callCount')}</span>/10</p>
-            </div>
+            
             </div>
             <div className=" sm:pt-7 flex w-full h-[200px] pt-8 flex-col  justify-between  "></div>
           </div>

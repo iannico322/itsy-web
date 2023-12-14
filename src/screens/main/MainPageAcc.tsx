@@ -564,11 +564,12 @@ const handleKeyDown = (event: any) => {
             <div className=" h-full w-full  gap-5   flex items-end justify-end  ">
             
             
-              <label
+            <label
+              id="upload"
                 htmlFor="file-upload"
-                className=" animate__animated animate__fadeInUp animate__delay-2s  border-[1px] border-border flex items-center justify-center  px-3 py-2 w-30 cursor-pointer text-accent-foreground m-7 bg-background/20 backdrop-blur-sm rounded-md text-sm hover:bg-accent  z-20 pointer-events-auto "
+                className=" animate__animated animate__fadeInUp animate__delay-2s  border-[1px] border-border flex items-center justify-center   px-3 py-2 w-30 cursor-pointer text-accent-foreground sm:m-3 m-7 bg-background/20 backdrop-blur-sm rounded-md text-sm hover:bg-accent  z-20 pointer-events-auto sm:text-xs "
               >
-                <UploadIcon className="sm:mr-2 mr-2 h-4 w-4 " />
+                <UploadIcon className="sm:mr-2 mr-2 sm:h-[14px] sm:w-[14px]  h-4 w-4 " />
                 Upload
               </label>
               <input
@@ -578,7 +579,7 @@ const handleKeyDown = (event: any) => {
                 accept=".jpg,.jpeg,.png"
                 onChange={uploadImage}
               />
-              <div className=" z-20 pointer-events-auto flex gap-3 absolute top-0 p-5 ">
+              <div className=" z-20 pointer-events-auto items-center flex gap-3 absolute top-0 sm:p-2 p-5 ">
               <Switch
              
              checked={isChecked}
@@ -587,7 +588,7 @@ const handleKeyDown = (event: any) => {
                 localStorage.setItem('mode-4',`${e}`)
                 console.log("mode-4:", e)
               }} />
-              <p className=" text-primary">GPT-4</p>
+              <p className=" text-primary sm:text-sm">GPT-4</p>
             </div>
             </div>
             <div className=" sm:pt-7 flex w-full h-[200px] pt-8 flex-col  justify-between  "></div>

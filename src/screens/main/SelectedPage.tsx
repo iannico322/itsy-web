@@ -7,13 +7,13 @@ const SelectedPage = (props:any) => {
       <div className=" relative h-[95%] sm:w-[95%]  border-[1px] border-[#3dd44b] rounded-md w-full overflow-y-scrol  ">
         <div className="absolute z-0 flex flex-col w-full h-full overflow-y-scroll ">
           <div className="w-full p-5 h-500px">
-            <div className="flex flex-row justify-between min-h-[100px] items-center h-[100px] w-full text-accent-foreground  ">
+            <div className="flex flex-row justify-between min-h-[100px] items-center  w-full text-accent-foreground  ">
               <div className="flex justify-between w-full items-center " >
-                <div className='flex gap-4  '>
+                <div className='flex gap-4 min-h-0 sm:pb-2   '>
                     <img src={logo} className=" animate__animated animate__fadeInDown h-[70px] sm:h-[50px] object-contain  relative" />
                     <div className="flex flex-col items-start justify-center">
                     <p className="text-lg font-bold sm:text-sm text-[#3dd44b]">ITSY</p>
-                    <p className="text-xl font-bold sm:text-base ">👨‍🍳{ props.SelectedMenu.name ? props.SelectedMenu.name:"" }</p>
+                    <p className="text-xl font-bold sm:text-sm ">👨‍🍳{ props.SelectedMenu.name ? props.SelectedMenu.name:"" }</p>
                     <p className=' text-xs mt-2 sm:mt-0'> <b>Good for </b> <span className=' underline'>{props.SelectedMenu.serves}</span> </p>
                     </div>
                    
