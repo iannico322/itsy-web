@@ -36,6 +36,15 @@ import "driver.js/dist/driver.css";
 const MainPageAcc = () => {
   const navigate = useNavigate()
   const [callCount, setCallCount] = useState<number>(0);
+  const [elementSelector, setelementSelector] = useState<any>("");
+
+  
+  useEffect(()=>{
+    let isMobile = window.matchMedia("only screen and (max-width: 760px)").matches;
+    setelementSelector(isMobile ? '#menus2' : '#card-right-container');
+  },[])
+
+
   const driverObj = driver({
     showProgress: true,
     showButtons: ['next', 'previous'],
@@ -95,7 +104,7 @@ const MainPageAcc = () => {
         }
       },
       { 
-        element: '#card-right-container  ', 
+        element: elementSelector, 
         popover: { 
           title: `🍽️ Yummy Menus Corner`, 
           description: `This is where the magic happens! I'll display the scrumptious dishes I've whipped up for you right here. 🎩✨🍲 `, 
@@ -138,6 +147,8 @@ const MainPageAcc = () => {
 
 
   useEffect(()=>{
+    
+    
     const currentDate = new Date().toDateString();
     const storedDate = localStorage.getItem('date');
     const storedCount = localStorage.getItem('callCount');
@@ -497,6 +508,7 @@ const handleKeyDown = (event: any) => {
         </p>
         |
         <p
+         id="menus2"
           className=" relative flex gap-2 items-center hover:text-[#3dd44b] hover:cursor-pointer "
           onClick={() => {
             setpageAtChat(false);
