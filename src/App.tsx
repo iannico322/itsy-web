@@ -11,9 +11,53 @@ import AIImg from "./images/ai.png";
 import ScanImg from "./images/scan.png";
 import MessageImg from "./images/message.png";
 import BookImg from "./images/book.png";
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
 // import CryptoJS from "crypto-js";
 
 function App() {
+  const driverObj = driver({
+    showProgress: true,
+    showButtons: ['next', 'previous'],
+    steps: [
+      { 
+        element: '#step1', 
+        popover: { 
+          title: `Hi, I'm Itsy!`, 
+          description: `I'm an AI-powered recipe generator. Input your preferences, and I'll spin out personalized recipes for you. Start exploring with ITSY today!`, 
+          side: "left", 
+          align: 'start' 
+        }
+      },
+      { 
+        element: '#downloadAppButton', 
+        popover: { 
+          title: `Download the App`, 
+          description: `You can download the ITSY app for a more personalized experience. The APK is hosted on Google Drive. Click here to download now!`, 
+          side: "right", 
+          align: 'start' 
+        }
+      },
+      { 
+        element: '#darkModeToggle', 
+        popover: { 
+          title: `Dark Mode`, 
+          description: `Prefer a darker theme? Toggle this switch to enable Dark Mode and give your eyes a break!`, 
+          side: "top", 
+          align: 'start' 
+        }
+      },
+      { 
+        element: '#getStartedButton', 
+        popover: { 
+          title: `Get Started`, 
+          description: `Ready to explore? Click here to get started and discover a web of culinary delights!`, 
+          side: "bottom", 
+          align: 'start' 
+        }
+      }
+    ]
+  });
 
 
   // this setups all the neccesary storage for its first boot
@@ -25,7 +69,12 @@ function App() {
 
    
       // localStorage.getItem('none')==null?localStorage.setItem('none','U2FsdGVkX18UQ2IN3040zHeBbni7vv1V3IxxQCKtFK8qVvVbd+1SZAApU5EQo2aptfrXD1Z4xfHRbYexqYJoIOSeBSA2gUymsQRoS6YvWcI='):""
-      localStorage.getItem('none2')==null?localStorage.setItem('none2','U2FsdGVkX19RVASTAa0UY10udMDNZXzZQZKuuz6bi/gNDotjwyyd9J25CrvWpYTYK9U2zZdgVyqmlv0V4++2hg8o3O+zlgswf1bPyL8EgrM='):""
+
+      localStorage.setItem("demo","0")
+
+      localStorage.getItem('none2')==null?localStorage.setItem('none2',
+      'U2FsdGVkX19RVASTAa0UY10udMDNZXzZQZKuuz6bi/gNDotjwyyd9J25CrvWpYTYK9U2zZdgVyqmlv0V4++2hg8o3O+zlgswf1bPyL8EgrM='):""
+      
       localStorage.getItem('user')==null?localStorage.setItem('user','0'):""
       localStorage.getItem('key')==null?localStorage.setItem('key','0'):""
       localStorage.getItem('count')==null?localStorage.setItem('count','0'):""
@@ -42,25 +91,25 @@ function App() {
   return (
     <div className="flex flex-col relative w-screen h-screen overflow-hidden bg-background">
       <nav className=" flex justify-around items-center w-full py-5 border-b-[1px] border-accent animate__animated animate__slideInDown  ">
-        <Link to="/itsy-web">
+        <Link id="step1" to="/itsy-web">
           <img className="object-contain h-12 " src={Logo} alt="ITSY logo" />
         </Link>
 
-        <div className=" flex items-center gap-4">
-          <Button>
+        <div className=" flex items-center gap-4" >
+          <Button id="downloadAppButton" >
             <a href="https://drive.google.com/drive/u/0/folders/1MeVEI-Y91vpp7eWCwO9UcXjKcZmPHJau" target="_blank">
               Download App
             </a>
           </Button>
 
-          <ModeToggle />
+          <ModeToggle id="darkModeToggle" />
         </div>
       </nav>
 
       <div className="flex relative items-center justify-center w-full h-full bg-background">
         <div className=" flex z-10 w-full h-full justify-around items-center ">
-          <div className=" animate__animated animate__fadeIn items-center justify-center translate-y-[-50px] flex w-2/3 rounded-lg max-w-[800px]  min-w-[320px] min-h-[400px] h-[60%] max-h-[500px] sm:max-h-[430px] border-[1px] border-border bg-card/20 backdrop-blur-md ">
-            <div className="  flex flex-col md:justify-around w-[80%] h-[70%] gap-5 sm:gap-1">
+          <div className=" animate__animated animate__fadeIn items-center justify-center translate-y-[-50px] flex w-2/3 rounded-lg max-w-[800px]  min-w-[320px] min-h-[400px] h-[60%] max-h-[500px] sm:max-h-[430px] border-[1px] border-border bg-card/20 backdrop-blur-md  " id="getStartedButton"> 
+            <div id="step1" className="  flex flex-col md:justify-around w-[80%] h-[70%] gap-5 sm:gap-1">
               <h4 className=" text-3xl sm:text-xl font-bold text-[#3DD44B]">
                 Welcome to ITSY
               </h4>
@@ -72,13 +121,15 @@ function App() {
                 and we’ll spin out personalized recipes for you. Start exploring
                 with ITSY today!
               </p>
-              <div className=" flex gap-4 mt-5 sm:mt-4">
+              <div className=" flex gap-4 mt-5 sm:mt-4 " >
                 <Button
                   variant="outline"
                   size="lg"
+                  
                   className=" border-[#3DD44B]"
                 >
                   <Link
+                  
                     to="/itsy-web/itsy"
                     className=" text-[#3DD44B] sm:text-xs"
                   >
@@ -86,10 +137,13 @@ function App() {
                   </Link>
                 </Button>
 
-                <Button size="lg">
-                  <a href="https://drive.google.com/drive/u/0/folders/1MeVEI-Y91vpp7eWCwO9UcXjKcZmPHJau" target="_blank" className=" sm:text-xs ">
-                    Download App
-                  </a>
+                <Button size="lg" onClick={()=>{
+                  driverObj.drive();
+                  localStorage.setItem("demo","1")
+                }}>
+                  
+                    Show Demo
+                  
                 </Button>
               </div>
             </div>

@@ -11,7 +11,7 @@ import { CheckBox } from "../checkBox/checkBox"
 export function Dropdown(props:any) {
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger asChild id={props.id}>
         <Button variant="outline"  className=" size-sm text-accent-foreground  min-w-[40px] sm:w-[80px] gap-2   ">+ <span className=" hidden sm:flex"> Pref.</span> <span className="sm:hidden">{props.text}</span></Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">

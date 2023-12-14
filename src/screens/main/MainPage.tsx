@@ -30,10 +30,113 @@ import SelectedPage from "./SelectedPage";
 import MenuLoader from "@/components/loader/menuLoader";
 import { Switch } from "@/components/ui/switch";
 import SinSupFo from "../authentication/SinSupFo";
+import { driver } from "driver.js";
+import "driver.js/dist/driver.css";
 
 const MainPageAcc = () => {
   const navigate = useNavigate()
   const [callCount, setCallCount] = useState<number>(0);
+  const driverObj = driver({
+    showProgress: true,
+    showButtons: ['next', 'previous'],
+    steps: [
+      { 
+        element: '#step1', 
+        popover: { 
+          title: `👋 Hiya! Welcome to Itsy!`, 
+          description: `This is Itsy's guest account. Ready to see some magic? 🎩✨`, 
+          side: "left", 
+          align: 'start' 
+        }
+      },
+      { 
+        element: '#card-left', 
+        popover: { 
+          title: '🗨️ Itsy Chit-Chat', 
+          description: `This is our little chit-chat corner. Just tell me your food items, and I'll whip up a dish you'll surely love! 🍽️❤️`, 
+          side: "left", 
+          align: 'start'  
+        }
+      },
+      { 
+        element: '#upload', 
+        popover: { 
+          title: '🔍 Magic Food Scanner', 
+          description: `Tap this magical button and poof! 🎩✨ I can identify your food, whether it's handwritten, a list, or a group of food. Give it a whirl! 🍲💫`, 
+          side: "left", 
+          align: 'start'  
+        }
+      },
+      { 
+        element: '#input-container', 
+        popover: { 
+          title: '📝 Manual Food Entry', 
+          description: 'Oops! If I missed any of your foods, just tap here and fill in the blanks. Remember, a number for quantity and a cute label would be perfect! 🍎5️⃣ Give it a try!', 
+          side: "left", 
+          align: 'start'  
+        }
+      },
+      { 
+        element: '#addItem', 
+        popover: { 
+          title: '🍽️ Add Food Now', 
+          description: 'All set? Tap this button to add your food item to your list. Bon appétit! 🎉', 
+          side: "left", 
+          align: 'start'  
+        }
+      },     
+      { 
+        element: '#generate', 
+        popover: { 
+          title: `🍽️ Itsy's Kitchen Time`, 
+          description: `Got your food items ready? Tap this magical button and I'll whip up some yummy dishes for you! Just a heads up, it might take a little while. 🎩✨`, 
+          side: "left", 
+          align: 'start'  
+        }
+      },
+      { 
+        element: '#card-right-container  ', 
+        popover: { 
+          title: `🍽️ Yummy Menus Corner`, 
+          description: `This is where the magic happens! I'll display the scrumptious dishes I've whipped up for you right here. 🎩✨🍲 `, 
+          side: "left", 
+          align: 'start'  
+        }
+      }
+      ,
+      { 
+        element: '#language', 
+        popover: { 
+          title: '🌍 Language Switch', 
+          description: 'Guess what? I can speak different languages! Well, at least for the food menus. Give it a try later! 🎩✨', 
+          side: "left", 
+          align: 'start'  
+        }
+      },
+      { 
+        element: '#pref', 
+        popover: { 
+          title: '🍽️ Your Flavor Adventure', 
+          description: `Ready for a flavor adventure? Pick your food preferences here! Just a tiny note, choices are a smidge limited right now. 🎉`, 
+          side: "left", 
+          align: 'start'  
+        }
+      },
+      { 
+        element: '#account', 
+        popover: { 
+          title: '👤 Create Account or Sign In', 
+          description: `Hi! An account is crucial for full access. Without it, your usage is limited. After signing up, activate your account via the Gmail link Itsy sends. 🚀📧`, 
+          side: "left", 
+          align: 'start'  
+        }
+      }
+      
+    ]
+  });
+
+
+
   useEffect(()=>{
     const currentDate = new Date().toDateString();
     const storedDate = localStorage.getItem('date');
@@ -49,6 +152,12 @@ const MainPageAcc = () => {
     if (localStorage.getItem("key")!="0"||localStorage.getItem("user")!="0") {
       navigate("/itsy-web/main")
     }
+    if (localStorage.getItem("demo")=="1") {
+      driverObj.drive();
+      
+    }
+
+
   },[])
 
   const limitedCallFunction = (num:any) => {
@@ -172,6 +281,9 @@ useEffect(() => {
       });
       
     }else{
+      let next = document.querySelector('.driver-popover-next-btn') as HTMLElement | null;
+      next?.click();
+        
      console.log({ name: items.name, quantity: items.quantity })
       setMessages([
         ...messages,
@@ -191,6 +303,9 @@ useEffect(() => {
 
 
   const uploadImage= (event:any)=> {
+    let next = document.querySelector('.driver-popover-next-btn') as HTMLElement | null;
+    next?.click();
+
     limitedCallFunction(0)
     if (callCount > 9) {
       toast({
@@ -338,8 +453,10 @@ const handleKeyDown = (event: any) => {
 
       {/* Naa dri ang navigation bar */}
       <nav className=" flex justify-between items-center w-full py-5 box-border px-6  ">
-        <Link className=" w-[20%] min-w-[100px] " to="/itsy-web">
+        <Link className=" w-[20%] min-w-[100px] "
+        to="/itsy-web" >
           <img
+          id="step1"
             className="object-contain h-12 m-0 sm:h-8  "
             src={Logo}
             alt="ITSY logo"
@@ -348,22 +465,26 @@ const handleKeyDown = (event: any) => {
 
         <div className="flex gap-3 w-[50%]  md:w-[75%] sm:gap-1 justify-end items-center">
           <Button
+            id="account"
             variant="default"
             className="px-5 sm:w-full flex sm:text-xs   "
             onClick={()=>{
+              let next = document.querySelector('.driver-popover-next-btn') as HTMLElement | null;
+              next?.click();
+
               SetviewAccount(true)
             }}
           >
             Use My Account
           </Button>
-          <Language />
+          <Language id="language" />
           <ModeToggle  />
         </div>
       </nav>
       {/* Naa dri ang navigation bar */}
 
       {/* Mobile Navigation only shows when screen is sm */}
-      <div className=" hidden sm:flex w-full h-10 items-center z-30   gap-3 justify-center text-accent-foreground/80 text-xs ">
+      <div id="menus" className=" hidden sm:flex w-full h-10 items-center z-30   gap-3 justify-center text-accent-foreground/80 text-xs ">
         <p
           className=" flex gap-2 items-center hover:text-[#3dd44b] hover:cursor-pointer  "
           onClick={() => {
@@ -432,6 +553,7 @@ const handleKeyDown = (event: any) => {
             
             <div className=" h-full w-full  gap-5   flex items-end justify-end  ">
               <label
+              id="upload"
                 htmlFor="file-upload"
                 className=" animate__animated animate__fadeInUp animate__delay-2s  border-[1px] border-border flex items-center justify-center  px-3 py-2 w-30 cursor-pointer text-accent-foreground m-7 bg-background/20 backdrop-blur-sm rounded-md text-sm hover:bg-accent  z-20 pointer-events-auto "
               >
@@ -551,8 +673,9 @@ const handleKeyDown = (event: any) => {
                     />
                   </div>
                   <div className=" flex sm:gap-1  sm:items-end  sm:flex-col sm:max-w-[80px] flex-row-reverse justify-between w-full  ">
-                    <Dropdown text="Preference" />
+                    <Dropdown text="Preference" id="pref" />
                     <Button
+                    id="addItem"
                       variant="default"
                       className="px-10 sm:w-full flex "
                       onClick={addItems}
@@ -625,8 +748,12 @@ const handleKeyDown = (event: any) => {
                 {/* this button call the openai menu generator component and throw a bunch of code the the developer forgots how it works */}
                 <Button
                   disabled={loading ? true : false}
+                  id="generate"
                   className="px-10 w-full gap-2"
                   onClick={() => {
+
+                    let next = document.querySelector('.driver-popover-next-btn') as HTMLElement | null;
+                    next?.click();
 
                     limitedCallFunction(0)
 

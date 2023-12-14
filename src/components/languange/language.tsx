@@ -43,7 +43,7 @@ const FormSchema = z.object({
   }),
 })
 
-export function Language () {
+export function Language ({id}:any) {
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   })
@@ -52,7 +52,7 @@ export function Language () {
 
   return (
     <Form {...form}>
-      <form onSubmit={()=>{}} className="space-y-6">
+      <form onSubmit={()=>{}} className="space-y-6" id={id}>
         <FormField
           control={form.control}
           name="language"
