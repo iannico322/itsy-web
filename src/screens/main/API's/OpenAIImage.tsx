@@ -1,12 +1,15 @@
-
-// import axios from 'axios'
-import CryptoJS from "crypto-js"
-
-
+import axios from 'axios';
+import CryptoJS from "crypto-js";
+let cancelRequest2: () => void;
 async function OpenAIImage({image}:any ) {
+  const source = axios.CancelToken.source();
   const decryptText = (encryptedText: string): string => {
     const bytes = CryptoJS.AES.decrypt(encryptedText, "itsy");
     return bytes.toString(CryptoJS.enc.Utf8);
+  };
+
+  cancelRequest2 = () => {
+    source.cancel("Operation canceled by the user.");
   };
 
 
@@ -14,6 +17,8 @@ async function OpenAIImage({image}:any ) {
     const reader = new FileReader();
     reader.readAsDataURL(image);
     reader.onload = async () => {
+
+
       if (typeof reader.result === 'string') {
         const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
         const data = {
@@ -56,24 +61,21 @@ async function OpenAIImage({image}:any ) {
           ],
           max_tokens: 300
         };
+        
         try {
-          
-          const response = await fetch('https://api.openai.com/v1/chat/completions', {
-           
-            method: 'POST',
+          const response = await axios.post('https://api.openai.com/v1/chat/completions', data, {
+            cancelToken: source.token,
             headers: {
               'Content-Type': 'application/json',
               'Authorization': `Bearer ${decryptText(
                 localStorage.getItem("none2") || ""
               )}` // Use environment variable for API key
-            },
-            body: JSON.stringify(data)
-          
+            }
           });
-          if (!response.ok) {
+          if (response.status !== 200) {
             throw new Error(`HTTP error! status: ${response.status}`);
           }
-          const apiResponse = await response.json();
+          const apiResponse = response.data;
           if (apiResponse.choices && apiResponse.choices.length > 0) {
             resolve(JSON.parse(apiResponse.choices[0].message.content));
           } else {
@@ -93,3 +95,5 @@ async function OpenAIImage({image}:any ) {
   });
 }
 export default OpenAIImage
+
+export { cancelRequest2 };
