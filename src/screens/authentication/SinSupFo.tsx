@@ -138,6 +138,7 @@ const SinSupFo = ({ viewopt }: any) => {
       // Password should be at least 5 characters long
       if (password.length < 8) {
         return false;
+        
       }
   
       // Password should contain at least one number
@@ -400,7 +401,7 @@ const SinSupFo = ({ viewopt }: any) => {
             onChange={onChangeInputCreate}
             onKeyDown={handleKeyDown}
           />
-          <p className={passwordVal?" text-xs ml-2 mt-1 text-green-500":" text-xs ml-2 mt-1 text-red-500"}>{passwordVal?"Valid password":"Invalid password"}</p>
+          <p className={passwordVal?" text-xs ml-2 mt-1 text-green-500":" text-xs ml-2 mt-1 text-red-500"}>{passwordVal?"Valid password":"It must be at least 8 characters and include numbers."}</p>
           </div>
           
           <div>
