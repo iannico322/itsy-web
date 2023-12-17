@@ -140,8 +140,6 @@ const Activation = () => {
           
           
           >Go Sign In</button>
-
-
         
         </div>
 

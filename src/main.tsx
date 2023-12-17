@@ -14,6 +14,11 @@ const Activation= lazy(() =>
   wait(2000).then(() => import("./screens/authentication/activation.tsx"))
 );
 
+const ResetPassword= lazy(() =>
+  wait(1300).then(() => import("./screens/authentication/ResetPassword.tsx"))
+);
+
+
 const MainPage= lazy(() =>
   wait(1300).then(() => import("./screens/main/MainPage.tsx"))
 );
@@ -49,6 +54,14 @@ const router = createBrowserRouter([
     element:  <>
     <Suspense fallback={<Loader />}>
       <Activation  />
+    </Suspense>
+  </>,
+  },
+  {
+    path: "/itsy-web/reset-password/:uid/:token",
+    element:  <>
+    <Suspense fallback={<Loader />}>
+      <ResetPassword  />
     </Suspense>
   </>,
   },
