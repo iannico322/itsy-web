@@ -661,7 +661,7 @@ const handleKeyDown = (event: any) => {
                     />
                     <Input
                       type="text"
-                      placeholder="Quantity/Weight"
+                      placeholder="Quantity"
                       value={items.quantity}
                       name="quantity"
                       onChange={onChangeInput}
