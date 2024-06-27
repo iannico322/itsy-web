@@ -39,7 +39,7 @@ async function OpenAIText({ product }: any) {
   const apiMessages = { role: "user", content: bodyPrompt };
 
   const apiRequestBody = {
-    model: localStorage.getItem("mode-4") == "false"?"gpt-3.5-turbo-1106":"gpt-4-1106-preview",
+    model: localStorage.getItem("mode-4") == "false"?"gpt-3.5-turbo-1106":"gpt-4o",
     response_format: { type: "json_object" },
     messages: [
       {

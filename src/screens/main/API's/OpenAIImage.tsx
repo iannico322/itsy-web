@@ -22,7 +22,7 @@ reader.onload = async () => {
 if (typeof reader.result === 'string') {
 const base64String = reader.result.replace('data:', '').replace(/^.+,/, '');
 const data = {
-model: "gpt-4-vision-preview",
+model: "gpt-4o-2024-05-13",
 messages: [
 {
 "role": "user",
